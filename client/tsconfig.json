@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "watch": true,
+        "target": "ES5",
+        //"outFile": "app.js",
+        "sourceMap": true
+    }//,
+    //"include": [
+    //    "*"
+    //]//,
+    //"exclude": [
+    //    "node_modules",
+    //    "**/*.spec.ts"
+    //]
+}

@@ -1,6 +1,32 @@
+<!DOCTYPE html>
 <html>
-	<head></head>
-	<body>
-		Hello world!!
-	</body>
+<head>
+	<base href="/">
+	<title></title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script src="node_modules/core-js/client/shim.min.js"></script>
+	<script src="node_modules/zone.js/dist/zone.js"></script>
+	<script src="node_modules/reflect-metadata/Reflect.js"></script>
+	<script src="node_modules/systemjs/dist/system.js"></script>
+
+	<script src="systemjs.config.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="app/assets/css/style.css">
+
+	<script>
+			System.import("app").catch(function(err) {
+				console.error(err);
+			})
+	</script>
+</head>
+<body>
+	<section id="content">
+		<my-app>Cargando...</my-app>
+	</section>
+	<footer>
+		<!--&copy; Curso de Node y Angular propiedad mia.-->
+	</footer>
+</body>
 </html>
