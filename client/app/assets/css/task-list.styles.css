@@ -1,0 +1,77 @@
+.card {
+	width:  95%;
+	max-width: 700px;
+	height: 100px;
+	background-color: white;
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+	margin: 10px auto;
+	overflow: hidden;
+	transition: all .5s ease;
+	cursor: pointer;
+}
+			
+.card .title {
+	font-size: 20px;
+	font-weight: 400;
+	letter-spacing: -.012em;
+	margin-top:10px;
+	margin-bottom: -5px;
+}
+
+.card p {
+	color: #757575;
+}
+
+.card .header-card {
+	width: 100%;
+	height: 10px;
+}
+
+.card .content-card {
+	padding: 5px 10px 5px 10px;
+}
+
+.content-body {
+	overflow: hidden;
+	max-height: 150px;
+ 	text-overflow: ellipsis;
+	display: -webkit-box;
+ 	-webkit-line-clamp: 1;
+ 	-webkit-box-orient: vertical;
+}
+
+.date-card {
+	color: #757575;
+	float: left;
+	font-size: 90%;
+}
+
+.priority-card {
+	float: right;
+}
+
+.card-box {
+	width: 15px;
+	height: 15px;
+	float: left;
+	margin-right: 4px;
+}
+
+.card-icon-remove {
+	width: 24px;
+	height: 24px;
+	float: right;
+	color: tomato;
+	margin-top:10px;
+}
+
+/* Transitions/Animations */
+.selectTask { 
+    height: 255px;
+}
+
+.selectTask-body {
+    -webkit-line-clamp: 200000!important; 
+    overflow-y:auto;
+}
+/* End Transitions/Animations */

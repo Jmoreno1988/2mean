@@ -4,3 +4,22 @@
 	text-decoration: none;
 	list-style: none;
 }
+
+body {
+	background-color: #eeeeee;
+	font-family: 'Roboto', 'Noto', sans-serif;
+}
+
+/* Colors */
+	.red {
+		background-color: tomato;
+	}
+
+	.green {
+		background-color: #4caf50;
+	}
+
+	.yellow {
+		background-color: #ffc107;
+	}
+/* End Colors */

@@ -14,8 +14,31 @@ var task_services_1 = require("../services/task.services");
 var TaskListComponent = (function () {
     function TaskListComponent(_taskService) {
         this._taskService = _taskService;
+        this.editNode = null;
+        this.selectedTaskNode = null;
+        this.show = false;
     }
     TaskListComponent.prototype.ngOnInit = function () {
+        this.tasks = this.getTasks();
+    };
+    TaskListComponent.prototype.getTasks = function () {
+        return this._taskService.getTasks();
+    };
+    TaskListComponent.prototype.activateEditMode = function (id, i) {
+        if (this.editNode != id) {
+            this.editNode = id;
+            this.selectedTaskNode = i;
+        }
+        else {
+            this.editNode = null;
+            this.selectedTaskNode = null;
+        }
+        this.show = false;
+    };
+    TaskListComponent.prototype.removeTask = function (id) {
+        for (var i = 0; i < this.tasks.length; i++)
+            if (this.tasks[i]._id == id)
+                this.tasks.splice(i, 1);
     };
     return TaskListComponent;
 }());
@@ -23,7 +46,8 @@ TaskListComponent = __decorate([
     core_1.Component({
         selector: "task-list",
         templateUrl: "./app/views/task-list.html",
-        providers: [task_services_1.TaskService]
+        providers: [task_services_1.TaskService],
+        styleUrls: ["./app/assets/css/task-list.styles.css"]
     }),
     __metadata("design:paramtypes", [task_services_1.TaskService])
 ], TaskListComponent);
