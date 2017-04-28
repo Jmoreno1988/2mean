@@ -24,14 +24,10 @@ var TaskListComponent = (function () {
     TaskListComponent.prototype.getTasks = function () {
         return this._taskService.getTasks();
     };
-    TaskListComponent.prototype.activateEditMode = function (id, i) {
+    TaskListComponent.prototype.openTask = function (id, i) {
         if (this.editNode != id) {
             this.editNode = id;
             this.selectedTaskNode = i;
-        }
-        else {
-            this.editNode = null;
-            this.selectedTaskNode = null;
         }
         this.show = false;
     };
@@ -39,6 +35,10 @@ var TaskListComponent = (function () {
         for (var i = 0; i < this.tasks.length; i++)
             if (this.tasks[i]._id == id)
                 this.tasks.splice(i, 1);
+        console.log(this.tasks.length);
+    };
+    TaskListComponent.prototype.toggleEdit = function () {
+        this.isEdit ? this.isEdit = false : this.isEdit = true;
     };
     TaskListComponent.prototype.getColorToPriority = function (priority) {
         var strColor = "";
@@ -54,6 +54,18 @@ var TaskListComponent = (function () {
                 break;
         }
         return strColor;
+    };
+    TaskListComponent.prototype.changePriority = function (newPriority, id) {
+        var task = this.getTaskById(id);
+        if (task)
+            task.priority = newPriority;
+    };
+    TaskListComponent.prototype.getTaskById = function (id) {
+        var task = null;
+        for (var i = 0; i < this.tasks.length; i++)
+            if (this.tasks[i]._id == id)
+                task = this.tasks[i];
+        return task;
     };
     return TaskListComponent;
 }());

@@ -1,24 +1,26 @@
 <div class="container">
     <div *ngFor="let task of tasks; let i = index;" [attr.data-index]="i" class="task-item">
-        <div id="card" class="card" (click)="activateEditMode(task._id, i);" [ngClass]="{'selectTask': selectedTaskNode === i}">
+        <div id="card" class="card" (click)="openTask(task._id, i);" [ngClass]="{'selectTask': selectedTaskNode === i}">
             <div class="header-card {{getColorToPriority(task.priority)}}"></div>
             <div class="content-card">
                 <div class="content-toolBox" *ngIf="editNode === task._id">
-                    <img class="content-toolBox-icon" src="./app/assets/images/pencil.svg" alt="Remove">
-                    <img class="content-toolBox-icon" src="./app/assets/images/icon-remove.svg" alt="Remove">
+                    <img class="content-toolBox-icon" src="./app/assets/images/save.svg" alt="Remove">
+                    <img (click)="removeTask(task._id)" class="content-toolBox-icon" src="./app/assets/images/icon-remove.svg" alt="Remove">
                 </div>
-
-                <div class="title">{{task.title}}</div>
-                <p class="content-body" [ngClass]="{'selectTask-body': selectedTaskNode === i}"> {{task.description}} </p>
+                
+                <input type="text" name="title" class="title" placeholder="{{task.title}}" />
+                
+                <textarea class="content-body" [ngClass]="{'selectTask-body': selectedTaskNode === i}" >{{task.description}}</textarea>
 
                 <div class="footer-card" *ngIf="editNode === task._id">
                     <div class="date-card">{{task.date.toLocaleDateString()}}</div>
                     <div class="priority-card">
-                        <div class="card-box green card-box-select"></div>
-                        <div class="card-box yellow"></div>
-                        <div class="card-box red"></div>
+                        <div class="card-box green card-box-select" (click)="changePriority(1, task._id)"></div>
+                        <div class="card-box yellow" (click)="changePriority(2, task._id)"></div>
+                        <div class="card-box red" (click)="changePriority(3, task._id)"></div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>

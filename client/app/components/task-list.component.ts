@@ -17,6 +17,7 @@ export class TaskListComponent implements OnInit {
     public show: boolean;
     public selectedTaskNode: number;
     public strColor:string; 
+    public isEdit: boolean;
 
     constructor(private _taskService: TaskService) {
         this.editNode = null;
@@ -32,14 +33,14 @@ export class TaskListComponent implements OnInit {
         return this._taskService.getTasks();
     }
 
-    public activateEditMode(id: string, i: number) {
+    public openTask(id: string, i: number) {
         if(this.editNode != id) {
             this.editNode = id;
             this.selectedTaskNode = i;
-        } else {
+        }/* else {
             this.editNode = null;
             this.selectedTaskNode = null;
-        }
+        }*/
 
         this.show = false;
     }
@@ -48,6 +49,12 @@ export class TaskListComponent implements OnInit {
         for(let i = 0; i < this.tasks.length; i++) 
             if(this.tasks[i]._id == id)
                 this.tasks.splice(i, 1);
+
+            console.log(this.tasks.length)
+    }
+
+    public toggleEdit() {
+        this.isEdit ? this.isEdit = false : this.isEdit = true; 
     }
 
     private getColorToPriority(priority: number) {
@@ -67,5 +74,22 @@ export class TaskListComponent implements OnInit {
         }
 
         return strColor;
+    }
+
+    public changePriority(newPriority: number, id: string) {
+        var task = this.getTaskById(id);
+
+        if(task)
+            task.priority = newPriority;
+    }
+
+    private getTaskById(id:string):Task {
+        var task:any = null
+        
+        for(let i = 0; i < this.tasks.length; i++) 
+            if(this.tasks[i]._id == id)
+                task = this.tasks[i];
+        
+        return task;
     }
 }
