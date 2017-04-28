@@ -16,6 +16,7 @@ export class TaskListComponent implements OnInit {
     public editNode: any;
     public show: boolean;
     public selectedTaskNode: number;
+    public strColor:string; 
 
     constructor(private _taskService: TaskService) {
         this.editNode = null;
@@ -47,5 +48,24 @@ export class TaskListComponent implements OnInit {
         for(let i = 0; i < this.tasks.length; i++) 
             if(this.tasks[i]._id == id)
                 this.tasks.splice(i, 1);
+    }
+
+    private getColorToPriority(priority: number) {
+        let strColor = "";
+        switch(priority) {
+            case 1:
+                strColor = "green";
+                break;
+
+            case 2: 
+                strColor = "yellow";
+                break;
+
+            case 3:
+                strColor = "red"; 
+                break;
+        }
+
+        return strColor;
     }
 }

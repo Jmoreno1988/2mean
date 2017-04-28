@@ -1,7 +1,7 @@
 <div class="container">
     <div *ngFor="let task of tasks; let i = index;" [attr.data-index]="i" class="task-item">
         <div id="card" class="card" (click)="activateEditMode(task._id, i);" [ngClass]="{'selectTask': selectedTaskNode === i}">
-            <div class="header-card green"></div>
+            <div class="header-card {{getColorToPriority(task.priority)}}"></div>
             <div class="content-card">
                 <div class="card-icon-remove" *ngIf="editNode === task._id">
                     <img src="./app/assets/images/icon-remove.svg" alt="Remove">
@@ -11,7 +11,7 @@
                 <p class="content-body" [ngClass]="{'selectTask-body': selectedTaskNode === i}"> {{task.description}} </p>
                 
                 <div class="footer-card" *ngIf="editNode === task._id">
-                    <div class="date-card">{{task.date}}</div>
+                    <div class="date-card">{{task.date.toLocaleDateString()}}</div>
                     <div class="priority-card">
                         <div class="card-box green card-box-select"></div>
                         <div class="card-box yellow"></div>

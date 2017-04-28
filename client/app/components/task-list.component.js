@@ -40,6 +40,21 @@ var TaskListComponent = (function () {
             if (this.tasks[i]._id == id)
                 this.tasks.splice(i, 1);
     };
+    TaskListComponent.prototype.getColorToPriority = function (priority) {
+        var strColor = "";
+        switch (priority) {
+            case 1:
+                strColor = "green";
+                break;
+            case 2:
+                strColor = "yellow";
+                break;
+            case 3:
+                strColor = "red";
+                break;
+        }
+        return strColor;
+    };
     return TaskListComponent;
 }());
 TaskListComponent = __decorate([
