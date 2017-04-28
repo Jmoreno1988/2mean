@@ -3,13 +3,14 @@
         <div id="card" class="card" (click)="activateEditMode(task._id, i);" [ngClass]="{'selectTask': selectedTaskNode === i}">
             <div class="header-card {{getColorToPriority(task.priority)}}"></div>
             <div class="content-card">
-                <div class="card-icon-remove" *ngIf="editNode === task._id">
-                    <img src="./app/assets/images/icon-remove.svg" alt="Remove">
+                <div class="content-toolBox" *ngIf="editNode === task._id">
+                    <img class="content-toolBox-icon" src="./app/assets/images/pencil.svg" alt="Remove">
+                    <img class="content-toolBox-icon" src="./app/assets/images/icon-remove.svg" alt="Remove">
                 </div>
-                
+
                 <div class="title">{{task.title}}</div>
                 <p class="content-body" [ngClass]="{'selectTask-body': selectedTaskNode === i}"> {{task.description}} </p>
-                
+
                 <div class="footer-card" *ngIf="editNode === task._id">
                     <div class="date-card">{{task.date.toLocaleDateString()}}</div>
                     <div class="priority-card">

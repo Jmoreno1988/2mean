@@ -57,12 +57,15 @@
 	margin-right: 4px;
 }
 
-.card-icon-remove {
+.content-toolBox{
+    height: 24px;
+    float: right;
+    margin-top: 10px;
+}
+
+.content-toolBox-icon {
 	width: 24px;
 	height: 24px;
-	float: right;
-	color: tomato;
-	margin-top:10px;
 }
 
 /* Transitions/Animations */
