@@ -18,11 +18,13 @@ export class TaskListComponent implements OnInit {
     public selectedTaskNode: number;
     public strColor:string; 
     public isEdit: boolean;
+    public title: string;
 
     constructor(private _taskService: TaskService) {
         this.editNode = null;
         this.selectedTaskNode = null;
         this.show = false; 
+        this.title = "All task";
     }
 
     ngOnInit() {
@@ -50,7 +52,12 @@ export class TaskListComponent implements OnInit {
             if(this.tasks[i]._id == id)
                 this.tasks.splice(i, 1);
 
-            console.log(this.tasks.length)
+        this.editNode = null;
+        this.selectedTaskNode = null;
+    }
+
+    public addTask() {
+        this.tasks.unshift(new Task(this.tasks.length.toString(), "Title", "Description...", new Date(), 1));
     }
 
     public toggleEdit() {

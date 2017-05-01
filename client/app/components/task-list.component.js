@@ -11,12 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var task_services_1 = require("../services/task.services");
+var taskModel_1 = require("../models/taskModel");
 var TaskListComponent = (function () {
     function TaskListComponent(_taskService) {
         this._taskService = _taskService;
         this.editNode = null;
         this.selectedTaskNode = null;
         this.show = false;
+        this.title = "All task";
     }
     TaskListComponent.prototype.ngOnInit = function () {
         this.tasks = this.getTasks();
@@ -35,7 +37,11 @@ var TaskListComponent = (function () {
         for (var i = 0; i < this.tasks.length; i++)
             if (this.tasks[i]._id == id)
                 this.tasks.splice(i, 1);
-        console.log(this.tasks.length);
+        this.editNode = null;
+        this.selectedTaskNode = null;
+    };
+    TaskListComponent.prototype.addTask = function () {
+        this.tasks.unshift(new taskModel_1.Task(this.tasks.length.toString(), "Title", "Description...", new Date(), 1));
     };
     TaskListComponent.prototype.toggleEdit = function () {
         this.isEdit ? this.isEdit = false : this.isEdit = true;
