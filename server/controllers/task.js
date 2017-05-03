@@ -3,12 +3,12 @@
 //Cargamos elesquema a utilizar 
 var Task = require('../models/taskModel');
 
-function test(req, res){
+function test(req, res) {
 	console.log("estoy en test");
 	var user;
-	if (req.params.user){
-		 user = req.params.user
-	}else{
+	if (req.params.user) {
+		user = req.params.user
+	} else {
 		user = "No User";
 	}
 
@@ -17,40 +17,40 @@ function test(req, res){
 	});
 }
 
-function test2(req, res){
+function test2(req, res) {
 	console.log("estoy en test2");
-	
+
 
 	res.status(200).send({
-		message: "Hola 222222: " 
+		message: "Hola 222222: "
 	});
 }
 
 
-function getAllTask(req, res){
+function getAllTask(req, res) {
 	//para devolver toda la colección ordenada por url
 	console.log("estoy en getAllTask");
-	Task.find({}).exec((err, tasks) =>{
-		if(err){
+	Task.find({}).exec((err, tasks) => {
+		if (err) {
 			res.status(500).send({
-				message : "Error al leer datos"
+				message: "Error al leer datos"
 			});
-		}else{
-			if(!tasks){
+		} else {
+			if (!tasks) {
 				res.status(200).send({
-					message : "No hay datos para leer"
+					message: "No hay datos para leer"
 				});
-			}else{
+			} else {
 				res.status(200).send({
-					tasks : tasks
+					tasks: tasks
 				});
 			}
 		}
-	});	
+	});
 }
 
 //Se pasan los parametros por el body
-function saveTask(req, res){
+function saveTask(req, res) {
 	var params = req.body;
 	var task = new Task();
 	task.title = params.title;
@@ -58,22 +58,120 @@ function saveTask(req, res){
 	task.priority = params.priority;
 	task.date = new Date();
 	task.save((err, taskStored) => {
-		if(err){
+		if (err) {
 			res.status(500).send({
 				message: "Error al guardar datos"
 			});
-		}else{
+		} else {
 			res.status(200).send({
-				task:  taskStored
+				task: taskStored
 			});
 		}
 	});
-	
+
+}
+
+function getTask(req, res) {
+	var taskId = req.params.id;
+	Task.find({ _id: taskId }, (err, task) => {
+		if (err) {
+			res.status(500).send({
+				message: "Error al leer datos"
+			});
+		} else {
+			if (!task) {
+				res.status(200).send({
+					message: "No hay datos para leer"
+				});
+			} else {
+				res.status(200).send({
+					task: task
+					//favorite : favorites
+				});
+			}
+		}
+	});
+}
+
+
+function updateTask(req, res) {
+	var taskId = req.params.id;
+	var update = req.body;
+	console.log("Estoy en update");
+	console.log(update);
+	Task.findByIdAndUpdate(taskId, update, (err, taskUpdated) => {
+		if (err) {
+			res.status(500).send({
+				message: "Error al actualizar "
+			});
+		} else {
+			if (!taskUpdated) {
+				res.status(200).send({
+					message: "No hay datos para actualizar"
+				});
+			} else {
+				res.status(200).send({
+					task: taskUpdated
+				});
+			}
+		}
+	});
+
+}
+
+function deleteTask(req, res) {
+	var taskId = req.params.id;
+	Task.findById(taskId, (err, task) => {
+		if (err) {
+			res.status(500).send({
+				message: "Error al borrar "
+			});
+		} else {
+			if (!task) {
+				res.status(200).send({
+					message: "No hay datos para borrar"
+				});
+			} else {
+				task.remove()
+				res.status(200).send({
+					message: "Tarea con id: " + taskId + " eliminada"
+				});
+			}
+		};
+
+	});
+}
+
+function upPriority(req, res) {
+	var taskId = req.params.id;
+	Task.findById(taskId, (err, task) => {
+		if (err) {
+			res.status(500).send({
+				message: "Error al borrar "
+			});
+		} else {
+			if (!fav) {
+				res.status(200).send({
+					message: "No hay datos para borrar"
+				});
+			} else {
+				if (task.priority && (task <= 1 || task > 3)) {
+					console.log("updateeeee " + task.priority);
+				} res.status(200).send({
+					message: "upPriority id: " + taskId + ""
+				});
+			}
+		};
+
+	});
 }
 
 module.exports = {
 	test,
-	test2, 
+	test2,
 	getAllTask,
-	saveTask
+	saveTask,
+	getTask,
+	updateTask,
+	deleteTask
 }
