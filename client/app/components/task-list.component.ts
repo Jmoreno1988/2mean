@@ -32,7 +32,19 @@ export class TaskListComponent implements OnInit {
     }
 
     private getTasks(): Array<Task> {
-        return this._taskService.getTasks();
+        this._taskService.getTasks().subscribe(
+            res => {
+                this.tasks = [];
+
+                for (let t of res.tasks) {
+			        this.tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority));
+                }
+            },
+            err => {
+                console.log("Error al recibir las tareas del servidor")
+                console.log(err)
+            })
+        return [];//;
     }
 
     public openTask(id: string, i: number) {
@@ -98,5 +110,15 @@ export class TaskListComponent implements OnInit {
                 task = this.tasks[i];
         
         return task;
+    }
+
+    public upPriority(_id: string) {
+        this._taskService.upPriority(_id);
+        this.getTasks();
+    }
+
+    public downPriority(_id: string) {
+        this._taskService.downPriority(_id);
+        this.getTasks();
     }
 }

@@ -24,7 +24,18 @@ var TaskListComponent = (function () {
         this.tasks = this.getTasks();
     };
     TaskListComponent.prototype.getTasks = function () {
-        return this._taskService.getTasks();
+        var _this = this;
+        this._taskService.getTasks().subscribe(function (res) {
+            _this.tasks = [];
+            for (var _i = 0, _a = res.tasks; _i < _a.length; _i++) {
+                var t = _a[_i];
+                _this.tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority));
+            }
+        }, function (err) {
+            console.log("Error al recibir las tareas del servidor");
+            console.log(err);
+        });
+        return [];
     };
     TaskListComponent.prototype.openTask = function (id, i) {
         if (this.editNode != id) {
@@ -72,6 +83,14 @@ var TaskListComponent = (function () {
             if (this.tasks[i]._id == id)
                 task = this.tasks[i];
         return task;
+    };
+    TaskListComponent.prototype.upPriority = function (_id) {
+        this._taskService.upPriority(_id);
+        this.getTasks();
+    };
+    TaskListComponent.prototype.downPriority = function (_id) {
+        this._taskService.downPriority(_id);
+        this.getTasks();
     };
     return TaskListComponent;
 }());
