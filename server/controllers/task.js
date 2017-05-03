@@ -49,8 +49,31 @@ function getAllTask(req, res){
 	});	
 }
 
+//Se pasan los parametros por el body
+function saveTask(req, res){
+	var params = req.body;
+	var task = new Task();
+	task.title = params.title;
+	task.description = params.description;
+	task.priority = params.priority;
+	task.date = new Date();
+	task.save((err, taskStored) => {
+		if(err){
+			res.status(500).send({
+				message: "Error al guardar datos"
+			});
+		}else{
+			res.status(200).send({
+				task:  taskStored
+			});
+		}
+	});
+	
+}
+
 module.exports = {
 	test,
 	test2, 
-	getAllTask
+	getAllTask,
+	saveTask
 }
