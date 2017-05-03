@@ -10,7 +10,7 @@ var taskSchema = Schema({
 	description: String,
 	date: Date,
 	priority: Number
-}, { collection : 'tasks' });
+}, { collection : 'tasks' }); // Especificamos la collection para obtener los datos. En caso de no ponerlo obtenemos un []
 
 //se especifica la colleccion
 module.exports = mongoose.model('taskModel', taskSchema);
