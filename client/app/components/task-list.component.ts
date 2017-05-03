@@ -16,39 +16,74 @@ export class TaskListComponent implements OnInit {
     public editNode: any;
     public show: boolean;
     public selectedTaskNode: number;
-    public strColor:string; 
+    public strColor: string;
     public isEdit: boolean;
     public title: string;
 
     constructor(private _taskService: TaskService) {
         this.editNode = null;
         this.selectedTaskNode = null;
-        this.show = false; 
+        this.show = false;
         this.title = "All task";
     }
 
     ngOnInit() {
-        this.tasks = this.getTasks();
+        this.getTasks();
     }
 
-    private getTasks(): Array<Task> {
+    private getTasks() {
         this._taskService.getTasks().subscribe(
             res => {
-                this.tasks = [];
+                this.tasks = []; // Limpia la lista
 
-                for (let t of res.tasks) {
-			        this.tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority));
-                }
+                for (let t of res.tasks)
+                    this.tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority));
             },
             err => {
-                console.log("Error al recibir las tareas del servidor")
-                console.log(err)
+                console.log("Error al recibir las tareas del servidor");
+            });
+    }
+
+    public deleteTask(id: string) {
+        this._taskService.deleteTask(id).subscribe(
+            res => {
+                this.getTasks();
+            },
+            err => {
+                console.log("Error al borrar tarea del servidor.");
             })
-        return [];//;
+
+        this.editNode = null;
+        this.selectedTaskNode = null;
+    }
+
+    public addTask() {
+        let newTask: Task = new Task("id", "Title", "Description", new Date(), 1);
+
+        this._taskService.addTask(newTask).subscribe(
+            res => {
+                this.getTasks();
+            },
+            err => {
+                console.log("Error al añadir una tarea nueva.");
+            });
+    }
+
+    public updateTask(id: string) {
+        let task = this.getTaskById(id);
+
+        if (task)
+            this._taskService.updateTask(task).subscribe(
+                res => {
+                    this.getTasks();
+                },
+                err => {
+                    console.log("Error al actualizar tarea.");
+                });
     }
 
     public openTask(id: string, i: number) {
-        if(this.editNode != id) {
+        if (this.editNode != id) {
             this.editNode = id;
             this.selectedTaskNode = i;
         }/* else {
@@ -59,74 +94,14 @@ export class TaskListComponent implements OnInit {
         this.show = false;
     }
 
-    public deleteTask(id:string) {
-        this._taskService.deleteTask(id).subscribe(
-            res => {
-                this.getTasks();
-            },
-            err => {
-                console.log("Error al borrar tarea del servidor.")
-                console.log(err)
-            })
-
-        this.editNode = null;
-        this.selectedTaskNode = null;
-    }
-
-    public addTask() {
-        this.tasks.unshift(new Task(this.tasks.length.toString(), "Title", "Description...", new Date(), 1));
-    }
-
-    public toggleEdit() {
-        this.isEdit ? this.isEdit = false : this.isEdit = true; 
-    }
-
-    private getColorToPriority(priority: number) {
-        let strColor = "";
-        switch(priority) {
-            case 1:
-                strColor = "green";
-                break;
-
-            case 2: 
-                strColor = "yellow";
-                break;
-
-            case 3:
-                strColor = "red"; 
-                break;
-        }
-
-        return strColor;
-    }
-
-    public changePriority(newPriority: number, id: string) {
-        var task = this.getTaskById(id);
-
-        if(task)
-            task.priority = newPriority;
-    }
-
-    private getTaskById(id:string):Task {
-        var task:any = null
-        
-        for(let i = 0; i < this.tasks.length; i++) 
-            if(this.tasks[i]._id == id)
-                task = this.tasks[i];
-        
-        return task;
-    }
-
     public upPriority(_id: string) {
         this._taskService.upPriority(_id).subscribe(
             res => {
                 this.getTasks();
             },
             err => {
-                console.log("Error al subir prioridad de la tarea.")
-                console.log(err)
+                console.log("Error al subir prioridad de la tarea.");
             });
-        this.getTasks();
     }
 
     public downPriority(_id: string) {
@@ -135,9 +110,40 @@ export class TaskListComponent implements OnInit {
                 this.getTasks();
             },
             err => {
-                console.log("Error al bajar prioridad de la tarea.")
-                console.log(err)
+                console.log("Error al bajar prioridad de la tarea.");
             });
-        this.getTasks();
+    }
+
+    public toggleEdit() {
+        this.isEdit ? this.isEdit = false : this.isEdit = true;
+    }
+
+    private getColorToPriority(priority: number) {
+        let strColor = "";
+        switch (priority) {
+            case 1:
+                strColor = "green";
+                break;
+
+            case 2:
+                strColor = "yellow";
+                break;
+
+            case 3:
+                strColor = "red";
+                break;
+        }
+
+        return strColor;
+    }
+
+    private getTaskById(id: string): Task {
+        var task: any = null
+
+        for (let i = 0; i < this.tasks.length; i++)
+            if (this.tasks[i]._id == id)
+                task = this.tasks[i];
+
+        return task;
     }
 }

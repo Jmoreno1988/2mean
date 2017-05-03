@@ -20,9 +20,26 @@ var TaskService = (function () {
     TaskService.prototype.getTasks = function () {
         return this._http.get(this.url + "/getAllTask").map(function (res) { return res.json(); });
     };
-    TaskService.prototype.getTask = function (id) {
+    TaskService.prototype.addTask = function (newTask) {
+        var json = JSON.stringify(newTask);
+        var params = json;
+        var headers = new http_1.Headers({
+            "Content-Type": "application/json"
+        });
+        return this._http.post(this.url + "/saveTask", params, { headers: headers })
+            .map(function (res) { return res.json(); });
     };
-    TaskService.prototype.addTask = function (favorite) {
+    TaskService.prototype.updateTask = function (task) {
+        var json = JSON.stringify(task);
+        var params = json;
+        var headers = new http_1.Headers({
+            "Content-Type": "application/json"
+        });
+        return this._http.put(this.url + "/updateTask/" + task._id, params, { headers: headers })
+            .map(function (res) { return res.json(); });
+    };
+    TaskService.prototype.deleteTask = function (id) {
+        return this._http.delete(this.url + "/deleteTask/" + id).map(function (res) { return res.json(); });
     };
     TaskService.prototype.upPriority = function (_id) {
         var headers = new http_1.Headers({
@@ -37,11 +54,6 @@ var TaskService = (function () {
         });
         return this._http.put(this.url + "/downPriority/" + _id, {}, { headers: headers })
             .map(function (res) { return res.json(); });
-    };
-    TaskService.prototype.editTask = function (favorite) {
-    };
-    TaskService.prototype.deleteTask = function (id) {
-        return this._http.delete(this.url + "/deleteTask/" + id).map(function (res) { return res.json(); });
     };
     return TaskService;
 }());

@@ -21,7 +21,7 @@ var TaskListComponent = (function () {
         this.title = "All task";
     }
     TaskListComponent.prototype.ngOnInit = function () {
-        this.tasks = this.getTasks();
+        this.getTasks();
     };
     TaskListComponent.prototype.getTasks = function () {
         var _this = this;
@@ -33,9 +33,36 @@ var TaskListComponent = (function () {
             }
         }, function (err) {
             console.log("Error al recibir las tareas del servidor");
-            console.log(err);
         });
-        return [];
+    };
+    TaskListComponent.prototype.deleteTask = function (id) {
+        var _this = this;
+        this._taskService.deleteTask(id).subscribe(function (res) {
+            _this.getTasks();
+        }, function (err) {
+            console.log("Error al borrar tarea del servidor.");
+        });
+        this.editNode = null;
+        this.selectedTaskNode = null;
+    };
+    TaskListComponent.prototype.addTask = function () {
+        var _this = this;
+        var newTask = new taskModel_1.Task("id", "Title", "Description", new Date(), 1);
+        this._taskService.addTask(newTask).subscribe(function (res) {
+            _this.getTasks();
+        }, function (err) {
+            console.log("Error al añadir una tarea nueva.");
+        });
+    };
+    TaskListComponent.prototype.updateTask = function (id) {
+        var _this = this;
+        var task = this.getTaskById(id);
+        if (task)
+            this._taskService.updateTask(task).subscribe(function (res) {
+                _this.getTasks();
+            }, function (err) {
+                console.log("Error al actualizar tarea.");
+            });
     };
     TaskListComponent.prototype.openTask = function (id, i) {
         if (this.editNode != id) {
@@ -44,19 +71,21 @@ var TaskListComponent = (function () {
         }
         this.show = false;
     };
-    TaskListComponent.prototype.deleteTask = function (id) {
+    TaskListComponent.prototype.upPriority = function (_id) {
         var _this = this;
-        this._taskService.deleteTask(id).subscribe(function (res) {
+        this._taskService.upPriority(_id).subscribe(function (res) {
             _this.getTasks();
         }, function (err) {
-            console.log("Error al borrar tarea del servidor.");
-            console.log(err);
+            console.log("Error al subir prioridad de la tarea.");
         });
-        this.editNode = null;
-        this.selectedTaskNode = null;
     };
-    TaskListComponent.prototype.addTask = function () {
-        this.tasks.unshift(new taskModel_1.Task(this.tasks.length.toString(), "Title", "Description...", new Date(), 1));
+    TaskListComponent.prototype.downPriority = function (_id) {
+        var _this = this;
+        this._taskService.downPriority(_id).subscribe(function (res) {
+            _this.getTasks();
+        }, function (err) {
+            console.log("Error al bajar prioridad de la tarea.");
+        });
     };
     TaskListComponent.prototype.toggleEdit = function () {
         this.isEdit ? this.isEdit = false : this.isEdit = true;
@@ -76,37 +105,12 @@ var TaskListComponent = (function () {
         }
         return strColor;
     };
-    TaskListComponent.prototype.changePriority = function (newPriority, id) {
-        var task = this.getTaskById(id);
-        if (task)
-            task.priority = newPriority;
-    };
     TaskListComponent.prototype.getTaskById = function (id) {
         var task = null;
         for (var i = 0; i < this.tasks.length; i++)
             if (this.tasks[i]._id == id)
                 task = this.tasks[i];
         return task;
-    };
-    TaskListComponent.prototype.upPriority = function (_id) {
-        var _this = this;
-        this._taskService.upPriority(_id).subscribe(function (res) {
-            _this.getTasks();
-        }, function (err) {
-            console.log("Error al subir prioridad de la tarea.");
-            console.log(err);
-        });
-        this.getTasks();
-    };
-    TaskListComponent.prototype.downPriority = function (_id) {
-        var _this = this;
-        this._taskService.downPriority(_id).subscribe(function (res) {
-            _this.getTasks();
-        }, function (err) {
-            console.log("Error al bajar prioridad de la tarea.");
-            console.log(err);
-        });
-        this.getTasks();
     };
     return TaskListComponent;
 }());
