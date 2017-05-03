@@ -71,8 +71,12 @@ function saveTask(req, res) {
 
 }
 
+
+
 function getTask(req, res) {
 	var taskId = req.params.id;
+	var task = new Task(getTaskbyId(taskId, res));
+
 	Task.find({ _id: taskId }, (err, task) => {
 		if (err) {
 			res.status(500).send({
@@ -86,8 +90,8 @@ function getTask(req, res) {
 			} else {
 				res.status(200).send({
 					task: task
-					//favorite : favorites
 				});
+				return task;
 			}
 		}
 	});
@@ -97,8 +101,6 @@ function getTask(req, res) {
 function updateTask(req, res) {
 	var taskId = req.params.id;
 	var update = req.body;
-	console.log("Estoy en update");
-	console.log(update);
 	Task.findByIdAndUpdate(taskId, update, (err, taskUpdated) => {
 		if (err) {
 			res.status(500).send({
@@ -147,24 +149,121 @@ function upPriority(req, res) {
 	Task.findById(taskId, (err, task) => {
 		if (err) {
 			res.status(500).send({
-				message: "Error al borrar "
+				message: "Error al buscar por id "
 			});
 		} else {
-			if (!fav) {
+			if (!task) {
 				res.status(200).send({
-					message: "No hay datos para borrar"
+					message: "No se encuentra el elemento con ese id"
 				});
 			} else {
-				if (task.priority && (task <= 1 || task > 3)) {
-					console.log("updateeeee " + task.priority);
+				if (task.priority && (task.priority >= 1 && task.priority < 3)) {
+					var up = { priority: task.priority + 1 }
+					Task.findByIdAndUpdate(task, up, (err, taskUpdated) => {
+						if (err) {
+							res.status(500).send({
+								message: "Error al actualizar "
+							});
+						} else {
+							if (!taskUpdated) {
+								res.status(200).send({
+									message: "No hay datos para actualizar"
+								});
+							} else {
+								res.status(200).send({
+									task: taskUpdated
+								});
+							}
+						}
+					});
+
 				} res.status(200).send({
-					message: "upPriority id: " + taskId + ""
+					message: "ya tiene asignada la máxima prioridad " + task.priority + "!"
 				});
 			}
 		};
 
 	});
 }
+
+function downPriority(req, res) {
+	var taskId = req.params.id;
+	Task.findById(taskId, (err, task) => {
+		if (err) {
+			res.status(500).send({
+				message: "Error al buscar por id "
+			});
+		} else {
+			if (!task) {
+				res.status(200).send({
+					message: "No se encuentra el elemento con ese id"
+				});
+			} else {
+				if (task.priority && (task.priority <= 3 && task.priority > 1)) {
+					var up = { priority: task.priority - 1 };
+					Task.findByIdAndUpdate(task, up, (err, taskUpdated) => {
+						if (err) {
+							res.status(500).send({
+								message: "Error al actualizar "
+							});
+						} else {
+							if (!taskUpdated) {
+								res.status(200).send({
+									message: "No hay datos para actualizar"
+								});
+							} else {
+								res.status(200).send({
+									task: taskUpdated
+								});
+							}
+						}
+					});
+
+				} else {
+					res.status(200).send({
+						message: "ya tiene asignada la mínima prioridad " + task.priority + "!"
+					});
+				}
+			}
+		};
+
+	});
+}
+
+function filterByPriority(req, res) {
+	var priority = req.params.priority;
+	Task.find({ "priority": priority }).exec((err, task) => {
+		if (err) {
+			res.status(500).send({
+				message: "Error al leer datos"
+			});
+		} else {
+			if (!task) {
+				res.status(200).send({
+					message: "No hay datos para leer"
+				});
+			} else {
+				res.status(200).send({
+					task: task
+				});
+			}
+		}
+	});
+}
+
+
+function prueba() {
+	Task.find({}).exec((err, tasks) => {
+		//console.log(tasks);
+	});
+
+	Task.find({ "priority": 2 }).exec((err, tasks2) => {
+		console.log(tasks2);
+	});
+}
+
+
+
 
 module.exports = {
 	test,
@@ -173,5 +272,9 @@ module.exports = {
 	saveTask,
 	getTask,
 	updateTask,
-	deleteTask
+	deleteTask,
+	upPriority,
+	downPriority,
+	prueba,
+	filterByPriority
 }
