@@ -1,6 +1,8 @@
 'use strict'
 
-var express = require('../../client/node_modules/express');
+//var express = require('../../client/node_modules/express');
+var express = require('express');
+
 var taskController = require('../controllers/task');
 var api = express.Router();
 

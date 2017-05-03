@@ -1,6 +1,7 @@
 'use strict'
 
-var mongoose = require('../../client/node_modules/mongoose');
+//var mongoose = require('../../client/node_modules/mongoose');
+var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 

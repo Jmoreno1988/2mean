@@ -3,7 +3,8 @@
 //Carga el módulo de express
 //Este modulo sirve para gestionar
 //peticiones y comunicaciones HTTP
-var express = require('../client/node_modules/express');
+//var express = require('../client/node_modules/express');
+var express = require('express');
 var app = express();
 
 //incluimos cabecera
@@ -15,7 +16,8 @@ var task_routes = require('./routes/taskRoute');
 //Cargar bodyParser
 //Esto lo que hace es que todo lo que llegue le haga un
 //parse a un JSON. Para eso sirve el bodyParse.
-var bodyParser = require('../client/node_modules/body-parser');
+//var bodyParser = require('../client/node_modules/body-parser');
+var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));//Limpia URL
 app.use(bodyParser.json());
 
