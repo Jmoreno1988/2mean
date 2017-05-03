@@ -44,10 +44,14 @@ var TaskListComponent = (function () {
         }
         this.show = false;
     };
-    TaskListComponent.prototype.removeTask = function (id) {
-        for (var i = 0; i < this.tasks.length; i++)
-            if (this.tasks[i]._id == id)
-                this.tasks.splice(i, 1);
+    TaskListComponent.prototype.deleteTask = function (id) {
+        var _this = this;
+        this._taskService.deleteTask(id).subscribe(function (res) {
+            _this.getTasks();
+        }, function (err) {
+            console.log("Error al borrar tarea del servidor.");
+            console.log(err);
+        });
         this.editNode = null;
         this.selectedTaskNode = null;
     };
@@ -85,11 +89,23 @@ var TaskListComponent = (function () {
         return task;
     };
     TaskListComponent.prototype.upPriority = function (_id) {
-        this._taskService.upPriority(_id);
+        var _this = this;
+        this._taskService.upPriority(_id).subscribe(function (res) {
+            _this.getTasks();
+        }, function (err) {
+            console.log("Error al subir prioridad de la tarea.");
+            console.log(err);
+        });
         this.getTasks();
     };
     TaskListComponent.prototype.downPriority = function (_id) {
-        this._taskService.downPriority(_id);
+        var _this = this;
+        this._taskService.downPriority(_id).subscribe(function (res) {
+            _this.getTasks();
+        }, function (err) {
+            console.log("Error al bajar prioridad de la tarea.");
+            console.log(err);
+        });
         this.getTasks();
     };
     return TaskListComponent;

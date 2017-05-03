@@ -73,6 +73,6 @@ export class TaskService {
     }
 
     deleteTask(id: string) {
-        //return this._http.delete(this.url + "/deleteFavorite/" + id).map(res => res.json());
+        return this._http.delete(this.url + "/deleteTask/" + id).map(res => res.json());
     }
 }

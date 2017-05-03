@@ -41,6 +41,7 @@ var TaskService = (function () {
     TaskService.prototype.editTask = function (favorite) {
     };
     TaskService.prototype.deleteTask = function (id) {
+        return this._http.delete(this.url + "/deleteTask/" + id).map(function (res) { return res.json(); });
     };
     return TaskService;
 }());

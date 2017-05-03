@@ -59,10 +59,15 @@ export class TaskListComponent implements OnInit {
         this.show = false;
     }
 
-    public removeTask(id:string) {
-        for(let i = 0; i < this.tasks.length; i++) 
-            if(this.tasks[i]._id == id)
-                this.tasks.splice(i, 1);
+    public deleteTask(id:string) {
+        this._taskService.deleteTask(id).subscribe(
+            res => {
+                this.getTasks();
+            },
+            err => {
+                console.log("Error al borrar tarea del servidor.")
+                console.log(err)
+            })
 
         this.editNode = null;
         this.selectedTaskNode = null;
@@ -113,12 +118,26 @@ export class TaskListComponent implements OnInit {
     }
 
     public upPriority(_id: string) {
-        this._taskService.upPriority(_id);
+        this._taskService.upPriority(_id).subscribe(
+            res => {
+                this.getTasks();
+            },
+            err => {
+                console.log("Error al subir prioridad de la tarea.")
+                console.log(err)
+            });
         this.getTasks();
     }
 
     public downPriority(_id: string) {
-        this._taskService.downPriority(_id);
+        this._taskService.downPriority(_id).subscribe(
+            res => {
+                this.getTasks();
+            },
+            err => {
+                console.log("Error al bajar prioridad de la tarea.")
+                console.log(err)
+            });
         this.getTasks();
     }
 }
