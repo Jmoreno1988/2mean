@@ -19,12 +19,16 @@ export class TaskListComponent implements OnInit {
     public strColor: string;
     public isEdit: boolean;
     public title: string;
+    public timeout: any;
+    public isSaving: boolean;
 
     constructor(private _taskService: TaskService) {
         this.editNode = null;
         this.selectedTaskNode = null;
+        this.timeout = null;
         this.show = false;
         this.title = "All task";
+        this.isSaving = false;
     }
 
     ngOnInit() {
@@ -76,9 +80,11 @@ export class TaskListComponent implements OnInit {
             this._taskService.updateTask(task).subscribe(
                 res => {
                     this.getTasks();
+                    this.isSaving = false;
                 },
                 err => {
                     console.log("Error al actualizar tarea.");
+                    this.isSaving = false;
                 });
     }
 
@@ -112,6 +118,15 @@ export class TaskListComponent implements OnInit {
             err => {
                 console.log("Error al bajar prioridad de la tarea.");
             });
+    }
+
+    public isFinishEdition(id: string) {
+        clearTimeout(this.timeout);
+
+        this.timeout = setTimeout(() => {
+            this.isSaving = true;
+            this.updateTask(id);
+        }, 500);
     }
 
     public toggleEdit() {

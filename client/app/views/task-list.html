@@ -12,7 +12,7 @@
     <div class="header blue">
         <div style="float:left;">
             <img class="header-icon-menu" src="./app/assets/images/menu.svg" alt="">
-            <span class="header-title">{{title}}</span>
+            <span class="header-title">{{title}} <span class="tagSaving" [ngClass]="{'saving': isSaving}">(saving...)</span> </span>
         </div>
 
         <div style="float:right; margin-right: 30px; cursor: pointer;" (click)="addTask()">
@@ -30,20 +30,20 @@
             <div class="content-card">
                 <div class="content-toolBox" *ngIf="editNode === task._id">
                     <!--<img class="content-toolBox-icon" src="./app/assets/images/check.svg" alt="">
-                    <img class="content-toolBox-icon" src="./app/assets/images/share.svg" alt="">-->
-                    <img (click)="updateTask(task._id)" class="content-toolBox-icon" src="./app/assets/images/save.svg" alt="Remove">
+                    <img class="content-toolBox-icon" src="./app/assets/images/share.svg" alt="">
+                    <img (click)="updateTask(task._id)" class="content-toolBox-icon" src="./app/assets/images/save.svg" alt="Remove">-->
                     <img (click)="deleteTask(task._id)" class="content-toolBox-icon" src="./app/assets/images/icon-remove.svg" alt="">
                 </div>
 
-                <input type="text" name="title" class="title" [(ngModel)]="task.title" />
+                <input type="text" name="title" class="title" [(ngModel)]="task.title" (keyup)="isFinishEdition(task._id)"/>
 
-                <textarea class="content-body" [ngClass]="{'selectTask-body': selectedTaskNode === i}" [(ngModel)]="task.description"></textarea>
+                <textarea class="content-body" [ngClass]="{'selectTask-body': selectedTaskNode === i}" [(ngModel)]="task.description" (keyup)="isFinishEdition(task._id)"></textarea>
 
                 <div class="footer-card" *ngIf="editNode === task._id">
                     <div class="date-card">{{task.date}}</div>
                     <div class="priority-card">
-                        <img (click)="upPriority(task._id)" class="content-toolBox-icon" src="./app/assets/images/arrow-up.svg" alt="">
-                        <img  (click)="downPriority(task._id)" class="content-toolBox-icon" src="./app/assets/images/arrow-down.svg" alt="">
+                        <img (click)="upPriority(task._id)" class="content-toolBox-icon fix-arrow" src="./app/assets/images/arrow-up.svg" alt="">
+                        <img  (click)="downPriority(task._id)" class="content-toolBox-icon fix-arrow" src="./app/assets/images/arrow-down.svg" alt="">
                     </div>
                 </div>
 

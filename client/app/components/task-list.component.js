@@ -17,8 +17,10 @@ var TaskListComponent = (function () {
         this._taskService = _taskService;
         this.editNode = null;
         this.selectedTaskNode = null;
+        this.timeout = null;
         this.show = false;
         this.title = "All task";
+        this.isSaving = false;
     }
     TaskListComponent.prototype.ngOnInit = function () {
         this.getTasks();
@@ -60,8 +62,10 @@ var TaskListComponent = (function () {
         if (task)
             this._taskService.updateTask(task).subscribe(function (res) {
                 _this.getTasks();
+                _this.isSaving = false;
             }, function (err) {
                 console.log("Error al actualizar tarea.");
+                _this.isSaving = false;
             });
     };
     TaskListComponent.prototype.openTask = function (id, i) {
@@ -86,6 +90,14 @@ var TaskListComponent = (function () {
         }, function (err) {
             console.log("Error al bajar prioridad de la tarea.");
         });
+    };
+    TaskListComponent.prototype.isFinishEdition = function (id) {
+        var _this = this;
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(function () {
+            _this.isSaving = true;
+            _this.updateTask(id);
+        }, 500);
     };
     TaskListComponent.prototype.toggleEdit = function () {
         this.isEdit ? this.isEdit = false : this.isEdit = true;

@@ -109,6 +109,15 @@ input {
 	cursor: pointer;
 }
 
+.fix-arrow {
+	margin-top: -10px;
+}
+
+.tagSaving {
+	font-size: 80%;
+	visibility: hidden;
+}
+
 /* Responsive */
 @media (max-width: 980px) {
 	.container {
@@ -135,5 +144,9 @@ input {
     overflow-y:auto;
     height: 10em;
     margin-bottom: 10px;
+}
+
+.saving {
+	visibility: visible;
 }
 /* End Transitions/Animations */
