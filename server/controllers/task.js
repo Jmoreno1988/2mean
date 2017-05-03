@@ -30,7 +30,7 @@ function test2(req, res){
 function getAllTask(req, res){
 	//para devolver toda la colección ordenada por url
 	console.log("estoy en getAllTask");
-	Task.find({}).sort('-date').exec((err, tasks) =>{
+	Task.find({}).exec((err, tasks) =>{
 		if(err){
 			res.status(500).send({
 				message : "Error al leer datos"
