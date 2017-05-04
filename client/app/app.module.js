@@ -12,6 +12,7 @@ var forms_1 = require("@angular/forms");
 var http_1 = require("@angular/http");
 var app_routing_1 = require("./app.routing");
 var app_component_1 = require("./app.component");
+var login_component_1 = require("./components/login.component");
 var task_list_component_1 = require("./components/task-list.component");
 var AppModule = (function () {
     function AppModule() {
@@ -21,7 +22,7 @@ var AppModule = (function () {
 AppModule = __decorate([
     core_1.NgModule({
         imports: [platform_browser_1.BrowserModule, forms_1.FormsModule, http_1.HttpModule, http_1.JsonpModule, app_routing_1.routing],
-        declarations: [app_component_1.AppComponent, task_list_component_1.TaskListComponent],
+        declarations: [app_component_1.AppComponent, login_component_1.LoginComponent, task_list_component_1.TaskListComponent],
         providers: [app_routing_1.appRoutingProvider],
         bootstrap: [app_component_1.AppComponent]
     })

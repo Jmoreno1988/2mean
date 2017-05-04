@@ -1,12 +1,14 @@
 import { ModuleWithProviders } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
+import { LoginComponent } from "./components/login.component";
 import { TaskListComponent } from "./components/task-list.component";
 
 const appRoutes: Routes = [
-	{ path: "", component: TaskListComponent },
-	{ path: "**", component: TaskListComponent }
-	];
+	{ path: "", component: LoginComponent },
+	{ path: "taskList/:idUser", component: TaskListComponent },
+	{ path: "**", component: LoginComponent }
+];
 
 export const appRoutingProvider: any[] = [];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);

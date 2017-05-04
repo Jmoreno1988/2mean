@@ -6,11 +6,12 @@ import { HttpModule, JsonpModule } from "@angular/http";
 import { appRoutingProvider, routing } from "./app.routing";
 
 import { AppComponent } from "./app.component";
+import { LoginComponent } from "./components/login.component";
 import { TaskListComponent } from "./components/task-list.component";
 
 @NgModule ({
 	imports: [ BrowserModule, FormsModule, HttpModule, JsonpModule, routing ],
-	declarations: [ AppComponent, TaskListComponent ],
+	declarations: [ AppComponent, LoginComponent, TaskListComponent ],
 	providers: [ appRoutingProvider ],
 	bootstrap: [ AppComponent ]
 })
