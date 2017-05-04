@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div *ngFor="let task of tasks; let i = index;" [attr.data-index]="i" class="task-item">
+    <div *ngFor="let task of tasks; let i = index;" [attr.data-index]="i" class="task-item" [ngClass]="{'removeCard': selectedTaskNodeRemove === i}">
         <div id="card" class="card" (click)="openTask(task._id, i);" [ngClass]="{'selectTask': selectedTaskNode === i}">
             <div class="header-card {{getColorToPriority(task.priority)}}"></div>
             <div class="content-card">
@@ -32,7 +32,7 @@
                     <!--<img class="content-toolBox-icon" src="./app/assets/images/check.svg" alt="">
                     <img class="content-toolBox-icon" src="./app/assets/images/share.svg" alt="">
                     <img (click)="updateTask(task._id)" class="content-toolBox-icon" src="./app/assets/images/save.svg" alt="Remove">-->
-                    <img (click)="deleteTask(task._id)" class="content-toolBox-icon" src="./app/assets/images/icon-remove.svg" alt="">
+                    <img (click)="deleteTask($event, task._id, i)" class="content-toolBox-icon" src="./app/assets/images/icon-remove.svg" alt="">
                 </div>
 
                 <input type="text" name="title" class="title" [(ngModel)]="task.title" (keyup)="isFinishEdition(task._id)"/>

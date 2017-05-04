@@ -17,8 +17,8 @@ var TaskListComponent = (function () {
         this._taskService = _taskService;
         this.editNode = null;
         this.selectedTaskNode = null;
+        this.selectedTaskNodeRemove = null;
         this.timeout = null;
-        this.show = false;
         this.title = "All task";
         this.isSaving = false;
     }
@@ -37,15 +37,20 @@ var TaskListComponent = (function () {
             console.log("Error al recibir las tareas del servidor");
         });
     };
-    TaskListComponent.prototype.deleteTask = function (id) {
+    TaskListComponent.prototype.deleteTask = function (evt, id, i) {
         var _this = this;
-        this._taskService.deleteTask(id).subscribe(function (res) {
-            _this.getTasks();
-        }, function (err) {
-            console.log("Error al borrar tarea del servidor.");
-        });
+        evt.stopPropagation();
+        this.selectedTaskNodeRemove = i;
         this.editNode = null;
         this.selectedTaskNode = null;
+        setTimeout(function () {
+            _this._taskService.deleteTask(id).subscribe(function (res) {
+                _this.getTasks();
+                _this.selectedTaskNodeRemove = null;
+            }, function (err) {
+                console.log("Error al borrar tarea del servidor.");
+            });
+        }, 500);
     };
     TaskListComponent.prototype.addTask = function () {
         var _this = this;
@@ -73,7 +78,6 @@ var TaskListComponent = (function () {
             this.editNode = id;
             this.selectedTaskNode = i;
         }
-        this.show = false;
     };
     TaskListComponent.prototype.upPriority = function (_id) {
         var _this = this;

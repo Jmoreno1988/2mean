@@ -14,8 +14,8 @@ export class TaskListComponent implements OnInit {
 
     public tasks: Array<Task>;
     public editNode: any;
-    public show: boolean;
     public selectedTaskNode: number;
+    public selectedTaskNodeRemove: number;
     public strColor: string;
     public isEdit: boolean;
     public title: string;
@@ -25,8 +25,8 @@ export class TaskListComponent implements OnInit {
     constructor(private _taskService: TaskService) {
         this.editNode = null;
         this.selectedTaskNode = null;
+        this.selectedTaskNodeRemove = null;
         this.timeout = null;
-        this.show = false;
         this.title = "All task";
         this.isSaving = false;
     }
@@ -48,17 +48,22 @@ export class TaskListComponent implements OnInit {
             });
     }
 
-    public deleteTask(id: string) {
-        this._taskService.deleteTask(id).subscribe(
-            res => {
-                this.getTasks();
-            },
-            err => {
-                console.log("Error al borrar tarea del servidor.");
-            })
-
+    public deleteTask(evt: any, id: string, i: any) {
+        evt.stopPropagation();
+        this.selectedTaskNodeRemove = i;
         this.editNode = null;
         this.selectedTaskNode = null;
+
+        setTimeout(() => {
+            this._taskService.deleteTask(id).subscribe(
+                res => {
+                    this.getTasks();
+                    this.selectedTaskNodeRemove = null;
+                },
+                err => {
+                    console.log("Error al borrar tarea del servidor.");
+                })
+        }, 500);
     }
 
     public addTask() {
@@ -96,8 +101,6 @@ export class TaskListComponent implements OnInit {
             this.editNode = null;
             this.selectedTaskNode = null;
         }*/
-
-        this.show = false;
     }
 
     public upPriority(_id: string) {
