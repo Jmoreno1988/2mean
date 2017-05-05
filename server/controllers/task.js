@@ -2,6 +2,9 @@
 
 //Cargamos elesquema a utilizar 
 var Task = require('../models/taskModel');
+var Thematic = require('../models/thematicModel');
+var User = require('../models/userModel');
+
 
 function test(req, res) {
 	console.log("estoy en test");
@@ -53,29 +56,75 @@ function getAllTask(req, res) {
 function saveTask(req, res) {
 	var params = req.body;
 	var task = new Task();
+	var user = new User();
 	task.title = params.title;
 	task.description = params.description;
 	task.priority = params.priority;
 	task.date = new Date();
-	task.save((err, taskStored) => {
+	task.userId = params.userId;
+	task.thematic = params.thematicId || null;
+
+	//antes de guardar compruebo que ese usuario no tenga ya la tarea con el mismo titulo
+	var isrepeat = false;
+	Task.find({}).exec((err, tasks) => {
 		if (err) {
-			res.status(500).send({
-				message: "Error al guardar datos"
-			});
+			res.status(500).send({ message: "Error al leer datos" });
 		} else {
-			res.status(200).send({
-				task: taskStored
-			});
+			if (!tasks) {
+				res.status(200).send({ message: "No hay datos para leer" });
+			} else {
+				for (var i = 0; i < tasks.length; i++) {
+					if ((params.title === tasks[i].title) && (params.userId == tasks[i].userId[0])) {
+						isrepeat = true;
+						res.status(200).send({ message: "El usuario ya tiene una tarea con ese titulo", tasks: null });
+						break;
+					}
+				}
+				if (!isrepeat) {
+					task.save((err, taskStored) => {
+						if (err) {
+							res.status(500).send({ messsage: 'Error en la petición' });
+						} else {
+							if (!taskStored) {
+								res.status(400).send({ message: 'No se ha guardado la imagen' });
+							} else {
+								res.status(200).send({ task: taskStored });
+							}
+						}
+					});
+					
+					// Cuando guardo una tarea debo add esta al array de tareas de usuarios!!!
+					var idUser = params.userId;
+					User.findOne({ _id: idUser }).exec((err, user) => {
+						if (err) {res.status(500).send({message: "Error al guardar datos"});
+					} else {
+						user.tasks.push(task._id)
+						}
+					});
+					/*User.findByIdAndUpdate(task.userId, user, (err, userUpdated)=>{
+						if (err) {
+							res.status(500).send({
+								message: "Error al guardar datos"
+							});
+						} else {
+							res.status(200).send({
+								message: "userUpdated guardado: " + userUpdated,
+								user: userUpdated
+							});
+						}
+					});
+					*/
+				}
+			}
 		}
 	});
-
 }
 
 
 
 function getTask(req, res) {
 	var taskId = req.params.id;
-	var task = new Task(getTaskbyId(taskId, res));
+	//var task = new Task(getTaskbyId(taskId, res));
 
 	Task.find({ _id: taskId }, (err, task) => {
 		if (err) {

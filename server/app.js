@@ -12,6 +12,8 @@ var app = express();
 
 //Cargamos las rutas
 var task_routes = require('./routes/taskRoute');
+var user_routes = require('./routes/userRoute');
+var thematic_routes = require('./routes/thematicRoute');
 
 //Cargar bodyParser
 //Esto lo que hace es que todo lo que llegue le haga un
@@ -34,6 +36,8 @@ app.use((req, res, next) => {
 
 
 app.use("/api", task_routes);
+app.use("/api", thematic_routes);
+app.use("/api", user_routes);
 
 //NOTA: Se puede usar el mismo api para disntitas rutas
 //Por ejemplo, para usar las pruebas con API sería:
