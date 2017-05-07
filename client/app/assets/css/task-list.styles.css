@@ -53,6 +53,23 @@
  	-webkit-box-orient: vertical;
 }
 
+.button-floating-action {
+	position: absolute;
+	bottom: 30px;
+	right: 30px;
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	background: tomato;
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+}
+
+.center-img{
+	margin-top: 16px;
+	margin-left: 16px;
+}
+
 .date-card {
 	color: #757575;
 	float: left;
@@ -113,6 +130,11 @@ input {
 	cursor: pointer;
 }
 
+.header-fix-icon2 {
+	padding-top: 10px; 
+	cursor: pointer;
+}
+
 .fix-arrow {
 	margin-top: -10px;
 }
@@ -120,6 +142,12 @@ input {
 .tagSaving {
 	font-size: 80%;
 	visibility: hidden;
+}
+
+.input-search {
+	border-bottom: 2px solid white;
+	color: white;
+	font-size: 16px;
 }
 
 /* Responsive */

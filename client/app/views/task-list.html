@@ -15,11 +15,14 @@
             <span class="header-title">{{title}} <span class="tagSaving" [ngClass]="{'saving': isSaving}">(saving...)</span> </span>
         </div>
 
-        <div style="float:right; margin-right: 30px; cursor: pointer;" (click)="addTask()">
-            <img class="header-fix-icon" src="./app/assets/images/plus.svg" alt=""> Add task
+        <div style="float:right; margin-right: 30px; cursor: pointer;">
+            <img class="header-fix-icon2" src="./app/assets/images/search.svg" alt=""> 
+            <img class="header-fix-icon2" src="./app/assets/images/logout.svg" alt="">
+
             <!--
+            <input type="text" name="title" class="input-search"/>
+            <img class="header-fix-icon" src="./app/assets/images/plus.svg" alt=""> Add task
             <img style="padding-left: 60px;" class="header-fix-icon" src="./app/assets/images/save.svg" alt=""> 
-            <img style="padding-left: 110px;" class="header-fix-icon" src="./app/assets/images/logout.svg" alt="">
             --> 
         </div>
     </div>
@@ -49,5 +52,9 @@
 
             </div>
         </div>
+    </div>
+
+    <div (click)="addTask()" class="button-floating-action">
+        <img width="24px" height="24px" class="center-img" src="./app/assets/images/plus.svg" alt="">
     </div>
 </div>

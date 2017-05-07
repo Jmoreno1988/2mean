@@ -8,10 +8,11 @@ import { appRoutingProvider, routing } from "./app.routing";
 import { AppComponent } from "./app.component";
 import { LoginComponent } from "./components/login.component";
 import { TaskListComponent } from "./components/task-list.component";
+import { Log } from "./components/log.component";
 
 @NgModule ({
 	imports: [ BrowserModule, FormsModule, HttpModule, JsonpModule, routing ],
-	declarations: [ AppComponent, LoginComponent, TaskListComponent ],
+	declarations: [ AppComponent, LoginComponent, TaskListComponent, Log ],
 	providers: [ appRoutingProvider ],
 	bootstrap: [ AppComponent ]
 })
