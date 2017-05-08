@@ -9,6 +9,7 @@ var Schema = mongoose.Schema;
 var userSchema = Schema({
 	name:String,
 	password: String,
+	email:String,
 	thematic:[{type: Schema.ObjectId, ref: 'thematicModel'}],
 	tasks: [{type: Schema.ObjectId, ref: 'taskModel'}]
 	

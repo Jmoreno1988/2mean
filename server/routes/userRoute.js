@@ -7,7 +7,8 @@ var userController = require('../controllers/user');
 var api = express.Router();
 
 
-api.get('/getAllInfoUser', userController.getAllInfoUser);
+api.get('/getAllInfoUser/:idUser', userController.getAllInfoUser);
+api.get('/getAllUser', userController.getAllUser);
 api.get('/testUser', userController.testUser);
 
 api.get('/getThematicForUse/:name', userController.getThematicForUse);

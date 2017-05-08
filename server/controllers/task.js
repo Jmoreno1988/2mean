@@ -20,15 +20,6 @@ function test(req, res) {
 	});
 }
 
-function test2(req, res) {
-	console.log("estoy en test2");
-
-
-	res.status(200).send({
-		message: "Hola 222222: "
-	});
-}
-
 
 function getAllTask(req, res) {
 	//para devolver toda la colección ordenada por url
@@ -67,11 +58,9 @@ function saveTask(req, res) {
 	//antes de guardar compruebo que ese usuario no tenga ya la tarea con el mismo titulo
 	var isrepeat = false;
 	Task.find({}).exec((err, tasks) => {
-		if (err) {
-			res.status(500).send({ message: "Error al leer datos" });
+		if (err) {res.status(500).send({ message: "Error al leer datos" });
 		} else {
-			if (!tasks) {
-				res.status(200).send({ message: "No hay datos para leer" });
+			if (!tasks) {res.status(200).send({ message: "No hay datos para leer" });
 			} else {
 				for (var i = 0; i < tasks.length; i++) {
 					if ((params.title === tasks[i].title) && (params.userId == tasks[i].userId[0])) {
@@ -88,32 +77,24 @@ function saveTask(req, res) {
 							if (!taskStored) {
 								res.status(400).send({ message: 'No se ha guardado la imagen' });
 							} else {
-								res.status(200).send({ task: taskStored });
+								// Cuando guardo una tarea debo add esta al array de tareas de usuarios!!!
+								var idUser = params.userId;
+								User.findByIdAndUpdate(idUser,{ $push:{ tasks: task._id }}, (err, userUpdated) => {
+									if (err) {
+										res.status(500).send({
+											message: "Error al guardar datos"
+										});
+									} else {
+										res.status(200).send({
+											message: "userUpdated guardado: " + userUpdated,
+											user: userUpdated,
+											task: taskStored
+										});
+									}
+								});
 							}
 						}
 					});
-					
-					// Cuando guardo una tarea debo add esta al array de tareas de usuarios!!!
-					var idUser = params.userId;
-					User.findOne({ _id: idUser }).exec((err, user) => {
-						if (err) {res.status(500).send({message: "Error al guardar datos"});
-					} else {
-						user.tasks.push(task._id)
-						}
-					});
-					/*User.findByIdAndUpdate(task.userId, user, (err, userUpdated)=>{
-						if (err) {
-							res.status(500).send({
-								message: "Error al guardar datos"
-							});
-						} else {
-							res.status(200).send({
-								message: "userUpdated guardado: " + userUpdated,
-								user: userUpdated
-							});
-						}
-					});
-					*/
 				}
 			}
 		}
@@ -316,7 +297,6 @@ function prueba() {
 
 module.exports = {
 	test,
-	test2,
 	getAllTask,
 	saveTask,
 	getTask,
