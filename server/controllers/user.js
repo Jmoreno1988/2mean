@@ -1,6 +1,6 @@
 'use strict'
 
-//Cargamos elesquema a utilizar 
+//Cargamos el esquema a utilizar 
 var Task = require('../models/taskModel');
 var Thematic = require('../models/thematicModel');
 var User = require('../models/userModel');
@@ -109,6 +109,7 @@ function saveUser(req, res) {
 	var params = req.body;
 	user.name = params.name;
 	user.password = params.password;
+	user.email = params.email;
 	//antes de guardar compruebo que no tenga ya el tematico con el mismo titulo
 	var isrepeat = false;
 	User.findOne({}).exec((err, user) => {
