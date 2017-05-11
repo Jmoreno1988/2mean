@@ -104,6 +104,7 @@ function getThematicForUse(req, res) {
 	});
 }
 
+/*Creamos un nuevo usuario. Pendiente asignar token... */
 function saveUser(req, res) {
 	var user = new User();
 	var params = req.body;

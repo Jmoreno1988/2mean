@@ -53,14 +53,16 @@ function saveTask(req, res) {
 	task.priority = params.priority;
 	task.date = new Date();
 	task.userId = params.userId;
-	task.thematic = params.thematicId || null;
+	task.thematicId = params.thematicId || null;
 
 	//antes de guardar compruebo que ese usuario no tenga ya la tarea con el mismo titulo
 	var isrepeat = false;
 	Task.find({}).exec((err, tasks) => {
-		if (err) {res.status(500).send({ message: "Error al leer datos" });
+		if (err) {
+			res.status(500).send({ message: "Error al leer datos" });
 		} else {
-			if (!tasks) {res.status(200).send({ message: "No hay datos para leer" });
+			if (!tasks) {
+				res.status(200).send({ message: "No hay datos para leer" });
 			} else {
 				for (var i = 0; i < tasks.length; i++) {
 					if ((params.title === tasks[i].title) && (params.userId == tasks[i].userId[0])) {
@@ -79,17 +81,19 @@ function saveTask(req, res) {
 							} else {
 								// Cuando guardo una tarea debo add esta al array de tareas de usuarios!!!
 								var idUser = params.userId;
-								User.findByIdAndUpdate(idUser,{ $push:{ tasks: task._id }}, (err, userUpdated) => {
+								User.findByIdAndUpdate(idUser, { $push: { tasks: task._id } }, (err, userUpdated) => {
 									if (err) {
 										res.status(500).send({
 											message: "Error al guardar datos"
 										});
 									} else {
-										res.status(200).send({
-											message: "userUpdated guardado: " + userUpdated,
-											user: userUpdated,
-											task: taskStored
-										});
+										if (task.thematicId) {//Guardo thematic
+											res.status(200).send({
+												user: userUpdated,
+												task: taskStored,
+												thematic: task.thematicId
+											});
+										}
 									}
 								});
 							}
