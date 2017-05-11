@@ -10,6 +10,7 @@ var thematicModel = Schema({
 	id:String,
 	title:String,
 	tasks: [{type: Schema.ObjectId, ref: 'taskModel'}]
+	
 },{ collection : 'thematics' }); // Especificamos la collection para obtener los datos. En caso de no ponerlo obtenemos un []
 
 //se especifica la colleccion

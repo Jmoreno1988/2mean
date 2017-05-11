@@ -9,11 +9,9 @@ var api = express.Router();
 
 api.get('/getAllInfoUser/:idUser', userController.getAllInfoUser);
 api.get('/getAllUser', userController.getAllUser);
-api.get('/testUser', userController.testUser);
 
 api.get('/getThematicForUse/:name', userController.getThematicForUse);
 api.get('/getTaskforUser/:idUser', userController.getTaskforUser);
 api.post('/saveUser', userController.saveUser);
-
 
 module.exports = api;

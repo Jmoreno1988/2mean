@@ -5,12 +5,6 @@ var Task = require('../models/taskModel');
 var Thematic = require('../models/thematicModel');
 var User = require('../models/userModel');
 
-function testUser(req, res) {
-	res.status(200).send(
-		{
-			message: 'Probando 123 siiiiiiii'
-		});
-}
 
 function getAllUser(req, res) {
 	User.find({}).exec((err, users) => {
@@ -33,75 +27,73 @@ function getAllUser(req, res) {
 }
 
 function getAllInfoUser(req, res) {
+	try {
 	var idUser = req.params.idUser;
 	User.findById({ _id: idUser }).exec((err, user) => {
 		if (err) {
 			res.status(500).send({ err: err });
 		} else {
 			if (!user) {
-				res.status(200).send({ message: "No hay datos para leer" });
+				res.status(200).send({ message: "Error al consultar el usuario" });
 			} else {
-				var result = {"user":idUser, "tasks":[], "thematic": []}
+				var result = {}
 				Task.populate(user, { path: "tasks" }, (err, usersTask) => {
 					if (err) {
 					}
-					result.tasks = usersTask.tasks;
-					
+					Thematic.populate(user, { path: "thematic" }, (err, usersThematic) => {
+						res.status(200).send(usersThematic);
+					});
 				});
-				Thematic.populate(user, { path: "thematic" }, (err, usersThematic) => {
-					if (err) {
-					}
-					result.thematic = usersThematic;
-					
-				});
-				res.status(200).send({ result: result });
-				console.log(result);
 			}
 		}
 	});
+	} catch (error) { Console.log("Error al obtener las tareas del usuario " + error) }
 }
 
 
 //Devuelve las tareas del usuario especificado por idUser"
 function getTaskforUser(req, res) {
-	var idUser = req.params.idUser || idUser;
-	User.findOne({ _id: idUser }).exec((err, users) => {
-		if (err) {
-			res.status(500).send({ message: "Error al leer datos" });
-		} else {
-			if (!users) { res.status(200).send({ message: "ususario no encontrado" }) }
-			else {
-				Task.populate(users, { path: "tasks" }, (err, usersTask) => {
-					if (err) {
-					}
-					res.status(200).send({ userTask: usersTask.tasks });
-				});
+	try {
+		var idUser = req.params.idUser || idUser;
+		User.findOne({ _id: idUser }).exec((err, users) => {
+			if (err) {
+				res.status(500).send({ message: "Error al leer datos" });
+			} else {
+				if (!users) { res.status(200).send({ message: "ususario no encontrado" }) }
+				else {
+					Task.populate(users, { path: "tasks" }, (err, usersTask) => {
+						if (err) {
+						}
+						res.status(200).send({ userTask: usersTask.tasks });
+					});
+				}
 			}
-		}
-	});
+		});
+	} catch (error) { Console.log("Error al obtener las tareas del usuario " + error) }
 }
 
 
 function getThematicForUse(req, res) {
-	var nameUser = req.params.name;
-
-	User.find({ name: nameUser }, (err, user) => {
-		if (err) {
-			res.status(500).send({
-				message: "Error al leer datos"
-			});
-		} else {
-			if (!user) {
-				res.status(200).send({
-					message: "No hay datos para leer"
+	try {
+		var nameUser = req.params.name;
+		User.find({ name: nameUser }, (err, user) => {
+			if (err) {
+				res.status(500).send({
+					message: "Error al leer datos"
 				});
 			} else {
-				res.status(200).send({
-					thematic: user[0].thematic
-				});
+				if (!user) {
+					res.status(200).send({
+						message: "No hay datos para leer"
+					});
+				} else {
+					res.status(200).send({
+						thematic: user[0].thematic
+					});
+				}
 			}
-		}
-	});
+		});
+	} catch (error) { Console.log("Error al obtener las tematicas del usuario " + error) }
 }
 
 /*Creamos un nuevo usuario. Pendiente asignar token... */
@@ -113,48 +105,42 @@ function saveUser(req, res) {
 	user.email = params.email;
 	//antes de guardar compruebo que no tenga ya el tematico con el mismo titulo
 	var isrepeat = false;
-	User.findOne({}).exec((err, user) => {
-		if (err) {
-			res.status(500).send({ message: "Error al leer datos" });
-		} else {
-			if (!user) {
-				res.status(200).send({ message: "No hay datos para leer" });
+	try {
+		User.find({ name: user.name }).exec((err, users) => {
+			if (err) {
+				res.status(500).send({
+					message: "Error al leer datos"
+				});
 			} else {
-				for (var i = 0; i < user.length; i++) {
-					if (params.name === user.name) {
-						isrepeat = true;
+				if (users) {
+					if (users.length == 0) {
+						user.save((err, userStored) => {
+							if (err) {
+								res.status(500).send({ messsage: 'Error en la petición' }, { user: null });
+							} else {
+								if (!userStored) {
+									res.status(400).send({ message: 'No al guardar el usuario' }, { user: null });
+								} else {
+									res.status(200).send({ user: userStored });
+								}
+							}
+						});
+					} else {
 						res.status(200).send({ message: "Ya existe ese nombre de usuario", user: null });
-						break;
 					}
 				}
-				if (!isrepeat) {
-					user.save((err, userStored) => {
-						if (err) {
-							res.status(500).send({ messsage: 'Error en la petición' });
-						} else {
-							if (!userStored) {
-								res.status(400).send({ message: 'No se ha guardado la imagen' });
-							} else {
-								res.status(200).send({ user: userStored });
-							}
-						}
-					});
-				}
 			}
-		}
-	});
+		});
+	} catch (error) {
+		console.log("Error to save User: " + error);
+	}
 
 }
 
-
-
-
 module.exports = {
-	testUser,
 	getAllUser,
 	getAllInfoUser,
 	getThematicForUse,
 	getTaskforUser,
 	saveUser
-
 }

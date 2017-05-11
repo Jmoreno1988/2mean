@@ -1,0 +1,13 @@
+Para referenciar a una base de datos en una ruta concreta Arrancar mongod de la siguiente manera:
+
+
+- Abrir consola como Administrador
+
+- Navegamos hasta la carpeta bin de instalación de mongodb
+
+- Ejecutamos:
+
+C:\Program Files\MongoDB\Server\3.4\bin>mongod --dbpath D:\INMA\Projects\Colaborativos\2mean\data\db
+
+Luego ya podemos ejecutar mongo.exe desde el directorio de instalación de Mongo.
+
