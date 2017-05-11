@@ -5,7 +5,7 @@ var login_component_1 = require("./components/login.component");
 var task_list_component_1 = require("./components/task-list.component");
 var appRoutes = [
     { path: "", component: login_component_1.LoginComponent },
-    { path: "taskList/:idUser", component: task_list_component_1.TaskListComponent },
+    { path: "taskList", component: task_list_component_1.TaskListComponent },
     { path: "**", component: login_component_1.LoginComponent }
 ];
 exports.appRoutingProvider = [];

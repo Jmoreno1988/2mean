@@ -10,20 +10,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var shared_services_1 = require("../services/shared.services");
 var task_services_1 = require("../services/task.services");
+var user_services_1 = require("../services/user.services");
 var taskModel_1 = require("../models/taskModel");
+var router_1 = require("@angular/router");
 var TaskListComponent = (function () {
-    function TaskListComponent(_taskService) {
+    function TaskListComponent(_taskService, _userService, _router, _sharedService) {
         this._taskService = _taskService;
+        this._userService = _userService;
+        this._router = _router;
+        this._sharedService = _sharedService;
         this.editNode = null;
         this.selectedTaskNode = null;
         this.selectedTaskNodeRemove = null;
         this.timeout = null;
         this.title = "All task";
         this.isSaving = false;
+        this.user = this._sharedService.user;
     }
     TaskListComponent.prototype.ngOnInit = function () {
-        this.getTasks();
+        if (!this.user)
+            this._router.navigate([""]);
     };
     TaskListComponent.prototype.getTasks = function () {
         var _this = this;
@@ -134,10 +142,13 @@ TaskListComponent = __decorate([
     core_1.Component({
         selector: "task-list",
         templateUrl: "./app/views/task-list.html",
-        providers: [task_services_1.TaskService],
+        providers: [task_services_1.TaskService, user_services_1.UserService],
         styleUrls: ["./app/assets/css/task-list.styles.css"]
     }),
-    __metadata("design:paramtypes", [task_services_1.TaskService])
+    __metadata("design:paramtypes", [task_services_1.TaskService,
+        user_services_1.UserService,
+        router_1.Router,
+        shared_services_1.SharedService])
 ], TaskListComponent);
 exports.TaskListComponent = TaskListComponent;
 //# sourceMappingURL=task-list.component.js.map

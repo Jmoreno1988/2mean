@@ -16,9 +16,25 @@ var UserService = (function () {
     function UserService(_http) {
         this._http = _http;
         this.url = "http://localhost:3688/api";
+        this.user = null;
     }
+    UserService.prototype.loginUser = function (userLogin) {
+        var json = JSON.stringify(userLogin);
+        var params = json;
+        var headers = new http_1.Headers({
+            "Content-Type": "application/json"
+        });
+        return this._http.post(this.url + "/getAllInfoUser", params, { headers: headers })
+            .map(function (res) { return res.json(); });
+    };
+    UserService.prototype.getAllIInfoUser = function (id) {
+        return this._http.get(this.url + "/getAllTask/" + id).map(function (res) { return res.json(); });
+    };
+    UserService.prototype.setUser = function (user) {
+        this.user = user;
+    };
     UserService.prototype.getUser = function () {
-        return {};
+        return this.user;
     };
     return UserService;
 }());

@@ -1,17 +1,21 @@
 import { Component, OnInit } from "@angular/core";
+import { SharedService } from "../services/shared.services";
 import { TaskService } from "../services/task.services";
+import { UserService } from "../services/user.services";
 import { Task } from "../models/taskModel";
-import { Route, ActivatedRoute, Params } from "@angular/router";
+import { User } from "../models/userModel";
+import { Router, ActivatedRoute, Params } from "@angular/router";
 
 @Component({
     selector: "task-list",
     templateUrl: "./app/views/task-list.html",
-    providers: [TaskService],
+    providers: [TaskService, UserService],
     styleUrls: ["./app/assets/css/task-list.styles.css"]
 })
 
 export class TaskListComponent implements OnInit {
 
+    private user: User;
     public tasks: Array<Task>;
     public editNode: any;
     public selectedTaskNode: number;
@@ -22,17 +26,26 @@ export class TaskListComponent implements OnInit {
     public timeout: any;
     public isSaving: boolean;
 
-    constructor(private _taskService: TaskService) {
+    constructor(
+        private _taskService: TaskService, 
+        private _userService: UserService, 
+        private _router: Router,
+        private _sharedService: SharedService
+        ) {
         this.editNode = null;
         this.selectedTaskNode = null;
         this.selectedTaskNodeRemove = null;
         this.timeout = null;
         this.title = "All task";
         this.isSaving = false;
+        this.user = this._sharedService.user;
     }
 
     ngOnInit() {
-        this.getTasks();
+        if(!this.user) 
+            this._router.navigate([""]); // Si no hay usuario, volvemos a la ventana de Login
+        
+        
     }
 
     private getTasks() {

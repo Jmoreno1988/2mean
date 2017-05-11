@@ -6,25 +6,25 @@
 
     <div class="login-card" [ngClass] = "{openLoginForm: isRegisterMode === true}">
         <div class="wrapperInputs">
-            <input type="text" name="lname" placeholder="Name"> <br>
-            <input type="password" name="lname" placeholder="Password">
+            <input type="text" name="lname" placeholder="Name" [(ngModel)]="userName"> <br>
+            <input type="password" name="lname" placeholder="Password" [(ngModel)]="userPassword">
         </div>
         <div (click)="login()" class="button"> Log in </div>
 
         <div (click)="openRegisterForm()" class="createAccount"> Or <br> Create an <span class="link">account</span></div>
     </div>
     
-    <div class="footer-text" [ngClass] = "{openLoginForm: isRegisterMode === true}"> Designed by 2MEAN team </div>
-
     <div class="login-card formRegister" [ngClass] = "{openRegisterForm: isRegisterMode === true}">
         <div class="wrapperInputs">
             <input type="text" name="lname" placeholder="Name"> <br>
             <input type="password" name="lname" placeholder="Password"> <br>
              <input type="password" name="lname" placeholder="Re-Password"> <br>
-             <input type="text" name="lname" placeholder="Email"> <br> 
+             <input type="text" name="lname" placeholder="Email">
         </div>
+        <div class="loader">Loading...</div>
         <div (click)="register()" class="button"> Create account </div>
         <div (click)="closeRegisterForm()" class="createAccount"> <span class="link">Cancel</span></div>
     </div>
     
+    <div class="footer-text"> Designed by 2MEAN team </div>
 </div>
