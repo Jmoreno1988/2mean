@@ -18,11 +18,18 @@ var LoginComponent = (function () {
         this._router = _router;
     }
     LoginComponent.prototype.ngOnInit = function () {
+        this.isRegisterMode = false;
         this.titleApp = "2MEAN";
         this.subTitle = "- A todo list free, easy and mobile -";
     };
     LoginComponent.prototype.login = function () {
         this._router.navigate(["/taskList/" + 1]);
+    };
+    LoginComponent.prototype.openRegisterForm = function () {
+        this.isRegisterMode = true;
+    };
+    LoginComponent.prototype.closeRegisterForm = function () {
+        this.isRegisterMode = false;
     };
     return LoginComponent;
 }());

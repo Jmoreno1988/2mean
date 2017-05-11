@@ -24,7 +24,7 @@
 .login-card {
     max-width: 450px;
     min-width: 300px;
-    height: 300px;
+    padding-bottom: 15px;
     background: white;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
     text-align: center;
@@ -81,3 +81,18 @@
     cursor: pointer;
     color: #039be5;
 }
+
+.formRegister {
+    display: none;
+}
+
+/* Transitions/Animations */
+.openRegisterForm {
+    display: block;
+}
+
+.openLoginForm {
+    display: none;
+}
+
+/* End Transitions/Animations */

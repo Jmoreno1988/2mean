@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
     public user: User;
     public titleApp: string;
     public subTitle: string;
+    public isRegisterMode: boolean;
 
     constructor(
         private _userService: UserService,
@@ -23,11 +24,20 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.isRegisterMode = false;
         this.titleApp = "2MEAN";
-        this.subTitle = "- A todo list free, easy and mobile -"
+        this.subTitle = "- A todo list free, easy and mobile -";
     }
 
     public login() {
         this._router.navigate(["/taskList/"+ 1])
+    }
+
+    public openRegisterForm () {
+        this.isRegisterMode = true;
+    }
+
+    public closeRegisterForm () {
+        this.isRegisterMode = false;
     }
 }
