@@ -15,6 +15,7 @@ var user_services_1 = require("../services/user.services");
 var userModel_1 = require("../models/userModel");
 var router_1 = require("@angular/router");
 var log_component_1 = require("./log.component");
+var encrypt_component_1 = require("./encrypt.component");
 var LoginComponent = (function () {
     function LoginComponent(_userService, _router, _sharedService) {
         this._userService = _userService;
@@ -27,18 +28,23 @@ var LoginComponent = (function () {
         this.subTitle = "- A todo list free, easy and mobile -";
         this.userName = null;
         this.userPassword = null;
+        this.userNameRegis = null;
+        this.passwordRegis = null;
+        this.rePasswordRegis = null;
+        this.emailRegis = null;
     };
     LoginComponent.prototype.login = function () {
         var _this = this;
         if (this.userName && this.userPassword) {
-            this._userService.loginUser({ name: this.userName, password: this.userPassword }).subscribe(function (res) {
+            var hash = encrypt_component_1.Encrypt.generateHash(this.userPassword);
+            console.log(hash);
+            this._userService.loginUser({ user: this.userName, password: hash }).subscribe(function (res) {
                 console.log(res);
-                if (res && res.result && res.result._id) {
-                    var r = res.result;
-                    var id = r._id;
-                    var name_1 = r.name;
-                    var tasks = r.tasks || [];
-                    var thematic = r.thematic || [];
+                if (res && res.id) {
+                    var id = res.id;
+                    var name_1 = res.userName;
+                    var tasks = res.tasks || [];
+                    var thematic = res.thematic || [];
                     _this._sharedService.user = new userModel_1.User(id, name_1, thematic, tasks);
                     _this._router.navigate(["/taskList"]);
                 }
@@ -59,11 +65,46 @@ var LoginComponent = (function () {
             log_component_1.Log.info("Falta todo");
         }
     };
+    LoginComponent.prototype.createUser = function () {
+        var _this = this;
+        if (this.userNameRegis && this.passwordRegis == this.rePasswordRegis && this.emailRegis) {
+            var hash = encrypt_component_1.Encrypt.generateHash(this.passwordRegis);
+            console.log(hash);
+            this._userService.createUser({ name: this.userNameRegis, password: hash, email: this.emailRegis }).subscribe(function (res) {
+                if (!res.user) {
+                    log_component_1.Log.error("Usuario ya existe");
+                    return;
+                }
+                else {
+                    log_component_1.Log.info("Usuario creaod correctamente");
+                    _this.closeRegisterForm();
+                }
+            }, function (err) {
+                log_component_1.Log.error("Error en el servidor");
+            });
+        }
+        else if (!this.userNameRegis) {
+            log_component_1.Log.info("Falta el nombre");
+        }
+        else if (!this.passwordRegis || !this.rePasswordRegis) {
+            log_component_1.Log.info("Falta contraseña");
+        }
+        else if (!this.emailRegis) {
+            log_component_1.Log.info("Falta el email");
+        }
+        else if (this.passwordRegis != this.rePasswordRegis) {
+            log_component_1.Log.info("Las contraseñas no son iguales");
+        }
+    };
     LoginComponent.prototype.openRegisterForm = function () {
         this.isRegisterMode = true;
     };
     LoginComponent.prototype.closeRegisterForm = function () {
         this.isRegisterMode = false;
+        this.userNameRegis = null;
+        this.passwordRegis = null;
+        this.rePasswordRegis = null;
+        this.emailRegis = null;
     };
     return LoginComponent;
 }());

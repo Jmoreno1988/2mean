@@ -27,6 +27,15 @@ var UserService = (function () {
         return this._http.post(this.url + "/getAllInfoUser", params, { headers: headers })
             .map(function (res) { return res.json(); });
     };
+    UserService.prototype.createUser = function (userInfo) {
+        var json = JSON.stringify(userInfo);
+        var params = json;
+        var headers = new http_1.Headers({
+            "Content-Type": "application/json"
+        });
+        return this._http.post(this.url + "/saveUser", params, { headers: headers })
+            .map(function (res) { return res.json(); });
+    };
     UserService.prototype.getAllIInfoUser = function (id) {
         return this._http.get(this.url + "/getAllTask/" + id).map(function (res) { return res.json(); });
     };

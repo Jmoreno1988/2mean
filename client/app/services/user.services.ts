@@ -22,7 +22,18 @@ export class UserService {
         let headers = new Headers({
             "Content-Type": "application/json"
         });
+        
         return this._http.post(this.url + "/getAllInfoUser", params, { headers: headers })
+            .map(res => res.json());
+    }
+
+    createUser(userInfo: any) {
+        let json = JSON.stringify(userInfo);
+        let params = json;
+        let headers = new Headers({
+            "Content-Type": "application/json"
+        });
+        return this._http.post(this.url + "/saveUser", params, { headers: headers })
             .map(res => res.json());
     }
 
