@@ -4,6 +4,9 @@
 var Task = require('../models/taskModel');
 var Thematic = require('../models/thematicModel');
 var User = require('../models/userModel');
+var Token = require('../models/tokenModel');
+// Token
+var randtoken = require('rand-token');
 
 
 function getAllUser(req, res) {
@@ -26,37 +29,81 @@ function getAllUser(req, res) {
 	});
 }
 
-
+// login y recupera los datos de usuario
 function getAllInfoUser(req, res) {
 	try {
-	var params = req.body;
-	var user = params.user;
-	var password = params.password;	
-	var idUser = req.params.idUser;
-	User.findOne({ name: user, password:password }).exec((err, user) => {
-		if (err) {
-			res.status(500).send({ err: err });
-		} else {
-			if (!user) {
-				res.status(200).send({ message: "Error al consultar el usuario" });
+		var params = req.body;
+		var user = params.user;
+		var password = params.password;
+		var idUser = req.params.idUser;
+		var token;
+		User.findOne({ name: user, password: password }).exec((err, user) => {
+			if (err) {
+				res.status(500).send({ err: err });
 			} else {
-				var result = {}
-				Task.populate(user, { path: "tasks" }, (err, usersTask) => {
-					if (err) {
+				if (!user) {
+					res.status(200).send({ message: "Error al consultar el usuario" });
+				} else {
+					var result = {}
+					if (!user.token) {//genero token para ese usuario:
+						console.log(" NO tiene token");
+						var suid = randtoken.suid;
+						token = suid(16);
+						var newToken = new Token();
+						newToken.token = token;
+						newToken.userId = idUser;
+						newToken.date = new Date();
+						newToken.save((err, tokenStored) => {
+							if (err) {
+								res.status(500).send({ message: "Error al guardar token" });
+							} if (!tokenStored) {
+								res.status(200).send({ message: "Errorrrrrrrrrrrrrr token" });
+							} else {
+								console.log(tokenStored.token)
+								console.log("token guardado");
+								User.findByIdAndUpdate(user._id, { token: tokenStored.token }, (err, userUpdated) => {
+									if (err) {
+										res.status(500).send({
+											message: "Error al actualizar "
+										});
+									} else {
+										if (!userUpdated) {
+											res.status(200).send({
+												message: "No hay datos para actualizar"
+											});
+										} else {
+											/*res.status(200).send({
+												tokenStored: tokenStored
+											});*/
+										}
+									}
+								});
+
+							}
+						});
+					} else {
+						console.log("YA tiene token");
+						//Ahora hay que ver la fecha del token y ver si la sesion está on.
 					}
-					Thematic.populate(user, { path: "thematic" }, (err, usersThematic) => {
-						var userLogaded = {
-							id: usersThematic._id,
-							userName: usersThematic.name,
-							tasks:usersThematic.tasks,
-							thematics:usersThematic.thematic
+
+
+					Task.populate(user, { path: "tasks" }, (err, usersTask) => {
+						if (err) {
 						}
-						res.status(200).send(userLogaded);
+						Thematic.populate(user, { path: "thematic" }, (err, usersThematic) => {
+							var userInfo = {
+								id: usersThematic._id,
+								userName: usersThematic.name,
+								token: usersThematic.token,
+								tasks: usersThematic.tasks,
+								thematics: usersThematic.thematic
+							}
+							res.status(200).send(userInfo);
+						});
 					});
-				});
+				}
 			}
-		}
-	});
+		});
 	} catch (error) { Console.log("Error al obtener las tareas del usuario " + error) }
 }
 

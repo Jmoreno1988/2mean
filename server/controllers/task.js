@@ -52,23 +52,29 @@ function createTask(req, res) {
 										}
 										//Continuo y actualizo la tabla de tematicas asignandole la nueva tarea.
 										var idThematic = params.thematicId
-										Thematic.findByIdAndUpdate(idThematic, { $push: { tasks: taskStored._id } }, (err, thematicUpdated) => {
-											if (err) {
-												res.status(500).send({
-													message: "Error al guardar datos"
-												});
-											} else {
-												if (thematicUpdated) {//Guardo thematic
-													res.status(200).send({
-														taskStored: taskStored
+										if (idThematic) {
+											Thematic.findByIdAndUpdate(idThematic, { $push: { tasks: taskStored._id } }, (err, thematicUpdated) => {
+												if (err) {
+													res.status(500).send({
+														message: "Error al guardar datos"
 													});
 												} else {
-													res.status(200).send({
-														message: "Error al guardar thematica de la tarea"
-													});
+													if (!thematicUpdated) {//Guardo thematic
+														res.status(200).send({
+															message: "Error al guardar thematica de la tarea"
+														});
+													} else {
+														res.status(200).send({
+															taskStored: taskStored
+														});
+													}
 												}
-											}
-										});
+											});
+										} else {
+											res.status(200).send({
+												taskStored: taskStored
+											});
+										}
 									}
 								});
 							}
