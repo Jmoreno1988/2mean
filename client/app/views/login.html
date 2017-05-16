@@ -16,13 +16,12 @@
     
     <div class="login-card formRegister" [ngClass] = "{openRegisterForm: isRegisterMode === true}">
         <div class="wrapperInputs">
-            <input type="text" name="lname" placeholder="Name"> <br>
-            <input type="password" name="lname" placeholder="Password"> <br>
-             <input type="password" name="lname" placeholder="Re-Password"> <br>
-             <input type="text" name="lname" placeholder="Email">
+            <input [(ngModel)]="userNameRegis" type="text" name="lname" placeholder="Name"> <br>
+            <input [(ngModel)]="passwordRegis" type="password" name="lname" placeholder="Password"> <br>
+             <input [(ngModel)]="rePasswordRegis" type="password" name="lname" placeholder="Re-Password"> <br>
+             <input [(ngModel)]="emailRegis" type="text" name="lname" placeholder="Email">
         </div>
-        <div class="loader">Loading...</div>
-        <div (click)="register()" class="button"> Create account </div>
+        <div (click)="createUser()" class="button"> Create account </div>
         <div (click)="closeRegisterForm()" class="createAccount"> <span class="link">Cancel</span></div>
     </div>
     

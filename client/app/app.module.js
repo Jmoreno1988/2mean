@@ -16,6 +16,7 @@ var shared_services_1 = require("./services/shared.services");
 var login_component_1 = require("./components/login.component");
 var task_list_component_1 = require("./components/task-list.component");
 var log_component_1 = require("./components/log.component");
+var encrypt_component_1 = require("./components/encrypt.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -24,7 +25,7 @@ var AppModule = (function () {
 AppModule = __decorate([
     core_1.NgModule({
         imports: [platform_browser_1.BrowserModule, forms_1.FormsModule, http_1.HttpModule, http_1.JsonpModule, app_routing_1.routing],
-        declarations: [app_component_1.AppComponent, login_component_1.LoginComponent, task_list_component_1.TaskListComponent, log_component_1.Log],
+        declarations: [app_component_1.AppComponent, login_component_1.LoginComponent, task_list_component_1.TaskListComponent, log_component_1.Log, encrypt_component_1.Encrypt],
         providers: [app_routing_1.appRoutingProvider, shared_services_1.SharedService],
         bootstrap: [app_component_1.AppComponent]
     })
