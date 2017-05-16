@@ -47,7 +47,6 @@ export class LoginComponent implements OnInit {
     public login() {
         if (this.userName && this.userPassword) {
             let hash = Encrypt.generateHash(this.userPassword);
-            console.log(hash)
             this._userService.loginUser({ user: this.userName, password: hash }).subscribe(
                 res => {
                     console.log(res)
@@ -55,9 +54,10 @@ export class LoginComponent implements OnInit {
                         let id = res.id;
                         let name = res.userName;
                         let tasks = res.tasks || [];
-                        let thematic = res.thematic || [];
+                        let thematic = res.thematics || [];
+                        let token = "";
 
-                        this._sharedService.user = new User(id, name, thematic, tasks);
+                        this._sharedService.user = new User(id, name, thematic, tasks, token);
                         this._router.navigate(["/taskList"]);
                     } else {
                         Log.error("Nombre de usuario o contraseña incorrectas.");
@@ -81,7 +81,6 @@ export class LoginComponent implements OnInit {
         // Comprobar que el mail es valido
         if (this.userNameRegis && this.passwordRegis == this.rePasswordRegis && this.emailRegis) {
             let hash = Encrypt.generateHash(this.passwordRegis);
-            console.log(hash)
             this._userService.createUser({ name: this.userNameRegis, password: hash, email: this.emailRegis }).subscribe(
                 res => {
                     if(!res.user) {

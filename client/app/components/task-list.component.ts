@@ -3,6 +3,7 @@ import { SharedService } from "../services/shared.services";
 import { TaskService } from "../services/task.services";
 import { UserService } from "../services/user.services";
 import { Task } from "../models/taskModel";
+import { Thematic } from "../models/thematicModel";
 import { User } from "../models/userModel";
 import { Router, ActivatedRoute, Params } from "@angular/router";
 
@@ -17,6 +18,7 @@ export class TaskListComponent implements OnInit {
 
     private user: User;
     public tasks: Array<Task>;
+    public thematics: Array<Thematic>;
     public editNode: any;
     public selectedTaskNode: number;
     public selectedTaskNodeRemove: number;
@@ -27,11 +29,11 @@ export class TaskListComponent implements OnInit {
     public isSaving: boolean;
 
     constructor(
-        private _taskService: TaskService, 
-        private _userService: UserService, 
+        private _taskService: TaskService,
+        private _userService: UserService,
         private _router: Router,
         private _sharedService: SharedService
-        ) {
+    ) {
         this.editNode = null;
         this.selectedTaskNode = null;
         this.selectedTaskNodeRemove = null;
@@ -39,13 +41,58 @@ export class TaskListComponent implements OnInit {
         this.title = "All task";
         this.isSaving = false;
         this.user = this._sharedService.user;
+        this.tasks = [];
+        this.thematics = [];
     }
 
     ngOnInit() {
-        if(!this.user) 
-            this._router.navigate([""]); // Si no hay usuario, volvemos a la ventana de Login
-        
-        
+        // Si no hay usuario, volvemos a la ventana de Login
+        if (!this.user) {
+            this._router.navigate([""]); 
+            return;
+        }
+
+        // Cargamos todas las tematicas y tareas
+        this.thematics = this.getAllThematics();
+        this.tasks = this.getAllTasks();
+    }
+
+    private getTasksByThematic(idThematic: string) {
+        let tasks: Array<Task> = [];
+
+        for (let t of this.user.tasks)
+            if (idThematic == t.thematicId)
+                tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+
+        return tasks;
+    }
+
+    private getAllTasks() {
+        let tasks: Array<Task> = [];
+
+        for (let t of this.user.tasks)
+            tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+
+        return tasks;
+    }
+
+    private getAllThematics() {
+        let thematics: Array<Thematic> = [];
+
+        for (let t of this.user.thematics)
+            thematics.push(new Thematic(t._id, t.title));
+
+        return thematics;
+    }
+
+    private selectThematic(idThematic: string) {
+        this.tasks = this.getTasksByThematic(idThematic)
+        this.title = this.getThematicById(idThematic).title;
+    }
+
+    private selectAllTasks(idThematic: string) {
+        this.tasks = this.getAllTasks()
+        this.title = "All task";
     }
 
     private getTasks() {
@@ -54,7 +101,7 @@ export class TaskListComponent implements OnInit {
                 this.tasks = []; // Limpia la lista
 
                 for (let t of res.tasks)
-                    this.tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority));
+                    this.tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
             },
             err => {
                 console.log("Error al recibir las tareas del servidor");
@@ -80,7 +127,7 @@ export class TaskListComponent implements OnInit {
     }
 
     public addTask() {
-        let newTask: Task = new Task("id", "Title", "Description", new Date(), 1);
+        let newTask: Task = new Task("id", "Title", "Description", new Date(), 1, null);
 
         this._taskService.addTask(newTask).subscribe(
             res => {
@@ -169,12 +216,22 @@ export class TaskListComponent implements OnInit {
     }
 
     private getTaskById(id: string): Task {
-        var task: any = null
+        let task: any = null
 
         for (let i = 0; i < this.tasks.length; i++)
             if (this.tasks[i]._id == id)
                 task = this.tasks[i];
 
         return task;
+    }
+
+    private getThematicById(id: string): Thematic {
+        let thematic: Thematic = null;
+        
+        for (let i = 0; i < this.thematics.length; i++)
+            if (this.thematics[i]._id == id)
+                thematic = this.thematics[i];
+                
+        return thematic;
     }
 }

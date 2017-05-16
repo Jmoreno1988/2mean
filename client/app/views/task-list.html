@@ -5,6 +5,14 @@
 
     <div class="header">
         <img class="header-fix-icon" src="./app/assets/images/plus-black.svg" alt=""> Add theme
+        <div (click)="selectAllTasks();" class="thematic"> All tasks </div>
+        <!--
+        <div class="thematic"> Trabajo </div>
+        <div class="thematic"> Compra </div>
+        -->
+        <div *ngFor="let thematic of thematics; let i = index;" [attr.data-index]="i">
+            <div (click)="selectThematic(thematic._id, i);" class="thematic"> {{thematic.title}} </div>
+        </div>
     </div>
 </div>
 
@@ -12,19 +20,13 @@
     <div class="header blue">
         <div style="float:left;">
             <img class="header-icon-menu" src="./app/assets/images/menu.svg" alt="">
-            <span class="header-title">{{title}} <span class="tagSaving" [ngClass]="{'saving': isSaving}">(saving...)</span> </span>
+            <span class="header-title">{{title}} <span class="tagSaving" [ngClass]="{'saving': isSaving}">(saving...)</span>            </span>
         </div>
 
         <div style="position:absolute; right: 30px; top: 5px;">
             <img style="padding-right: 15px;" src="./app/assets/images/search.svg" alt="">
-            <img style="padding-right: 15px;" src="./app/assets/images/view-module.svg" alt=""> 
+            <img style="padding-right: 15px;" src="./app/assets/images/view-module.svg" alt="">
             <img src="./app/assets/images/dots-vertical.svg" alt="">
-
-            <!--
-            <input type="text" name="title" class="input-search"/>
-            <img class="header-fix-icon" src="./app/assets/images/plus.svg" alt=""> Add task
-            <img style="padding-left: 60px;" class="header-fix-icon" src="./app/assets/images/save.svg" alt=""> 
-            --> 
         </div>
     </div>
 
@@ -33,13 +35,10 @@
             <div class="header-card {{getColorToPriority(task.priority)}}"></div>
             <div class="content-card">
                 <div class="content-toolBox" *ngIf="editNode === task._id">
-                    <!--<img class="content-toolBox-icon" src="./app/assets/images/check.svg" alt="">
-                    <img class="content-toolBox-icon" src="./app/assets/images/share.svg" alt="">
-                    <img (click)="updateTask(task._id)" class="content-toolBox-icon" src="./app/assets/images/save.svg" alt="Remove">-->
                     <img (click)="deleteTask($event, task._id, i)" class="content-toolBox-icon" src="./app/assets/images/icon-remove.svg" alt="">
                 </div>
 
-                <input type="text" name="title" class="title" [(ngModel)]="task.title" (keyup)="isFinishEdition(task._id)"/>
+                <input type="text" name="title" class="title" [(ngModel)]="task.title" (keyup)="isFinishEdition(task._id)" />
 
                 <textarea class="content-body" [ngClass]="{'selectTask-body': selectedTaskNode === i}" [(ngModel)]="task.description" (keyup)="isFinishEdition(task._id)"></textarea>
 
@@ -47,7 +46,7 @@
                     <div class="date-card">{{task.date}}</div>
                     <div class="priority-card">
                         <img (click)="upPriority(task._id)" class="content-toolBox-icon fix-arrow" src="./app/assets/images/arrow-up.svg" alt="">
-                        <img  (click)="downPriority(task._id)" class="content-toolBox-icon fix-arrow" src="./app/assets/images/arrow-down.svg" alt="">
+                        <img (click)="downPriority(task._id)" class="content-toolBox-icon fix-arrow" src="./app/assets/images/arrow-down.svg" alt="">
                     </div>
                 </div>
 

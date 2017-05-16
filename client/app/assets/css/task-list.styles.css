@@ -150,6 +150,13 @@ input {
 	font-size: 16px;
 }
 
+.thematic {
+	border-bottom: 1px solid rgba(0,0,0,.14);
+	line-height: 42px;
+	font-size: 16px;
+	color: #757575;
+}
+
 /* Responsive */
 @media (max-width: 980px) {
 	.container {

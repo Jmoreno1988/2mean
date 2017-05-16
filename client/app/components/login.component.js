@@ -37,15 +37,15 @@ var LoginComponent = (function () {
         var _this = this;
         if (this.userName && this.userPassword) {
             var hash = encrypt_component_1.Encrypt.generateHash(this.userPassword);
-            console.log(hash);
             this._userService.loginUser({ user: this.userName, password: hash }).subscribe(function (res) {
                 console.log(res);
                 if (res && res.id) {
                     var id = res.id;
                     var name_1 = res.userName;
                     var tasks = res.tasks || [];
-                    var thematic = res.thematic || [];
-                    _this._sharedService.user = new userModel_1.User(id, name_1, thematic, tasks);
+                    var thematic = res.thematics || [];
+                    var token = "";
+                    _this._sharedService.user = new userModel_1.User(id, name_1, thematic, tasks, token);
                     _this._router.navigate(["/taskList"]);
                 }
                 else {
@@ -69,7 +69,6 @@ var LoginComponent = (function () {
         var _this = this;
         if (this.userNameRegis && this.passwordRegis == this.rePasswordRegis && this.emailRegis) {
             var hash = encrypt_component_1.Encrypt.generateHash(this.passwordRegis);
-            console.log(hash);
             this._userService.createUser({ name: this.userNameRegis, password: hash, email: this.emailRegis }).subscribe(function (res) {
                 if (!res.user) {
                     log_component_1.Log.error("Usuario ya existe");

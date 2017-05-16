@@ -14,6 +14,7 @@ var shared_services_1 = require("../services/shared.services");
 var task_services_1 = require("../services/task.services");
 var user_services_1 = require("../services/user.services");
 var taskModel_1 = require("../models/taskModel");
+var thematicModel_1 = require("../models/thematicModel");
 var router_1 = require("@angular/router");
 var TaskListComponent = (function () {
     function TaskListComponent(_taskService, _userService, _router, _sharedService) {
@@ -28,10 +29,49 @@ var TaskListComponent = (function () {
         this.title = "All task";
         this.isSaving = false;
         this.user = this._sharedService.user;
+        this.tasks = [];
+        this.thematics = [];
     }
     TaskListComponent.prototype.ngOnInit = function () {
-        if (!this.user)
+        if (!this.user) {
             this._router.navigate([""]);
+            return;
+        }
+        this.thematics = this.getAllThematics();
+        this.tasks = this.getAllTasks();
+    };
+    TaskListComponent.prototype.getTasksByThematic = function (idThematic) {
+        var tasks = [];
+        for (var _i = 0, _a = this.user.tasks; _i < _a.length; _i++) {
+            var t = _a[_i];
+            if (idThematic == t.thematicId)
+                tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+        }
+        return tasks;
+    };
+    TaskListComponent.prototype.getAllTasks = function () {
+        var tasks = [];
+        for (var _i = 0, _a = this.user.tasks; _i < _a.length; _i++) {
+            var t = _a[_i];
+            tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+        }
+        return tasks;
+    };
+    TaskListComponent.prototype.getAllThematics = function () {
+        var thematics = [];
+        for (var _i = 0, _a = this.user.thematics; _i < _a.length; _i++) {
+            var t = _a[_i];
+            thematics.push(new thematicModel_1.Thematic(t._id, t.title));
+        }
+        return thematics;
+    };
+    TaskListComponent.prototype.selectThematic = function (idThematic) {
+        this.tasks = this.getTasksByThematic(idThematic);
+        this.title = this.getThematicById(idThematic).title;
+    };
+    TaskListComponent.prototype.selectAllTasks = function (idThematic) {
+        this.tasks = this.getAllTasks();
+        this.title = "All task";
     };
     TaskListComponent.prototype.getTasks = function () {
         var _this = this;
@@ -39,7 +79,7 @@ var TaskListComponent = (function () {
             _this.tasks = [];
             for (var _i = 0, _a = res.tasks; _i < _a.length; _i++) {
                 var t = _a[_i];
-                _this.tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority));
+                _this.tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
             }
         }, function (err) {
             console.log("Error al recibir las tareas del servidor");
@@ -62,7 +102,7 @@ var TaskListComponent = (function () {
     };
     TaskListComponent.prototype.addTask = function () {
         var _this = this;
-        var newTask = new taskModel_1.Task("id", "Title", "Description", new Date(), 1);
+        var newTask = new taskModel_1.Task("id", "Title", "Description", new Date(), 1, null);
         this._taskService.addTask(newTask).subscribe(function (res) {
             _this.getTasks();
         }, function (err) {
@@ -135,6 +175,13 @@ var TaskListComponent = (function () {
             if (this.tasks[i]._id == id)
                 task = this.tasks[i];
         return task;
+    };
+    TaskListComponent.prototype.getThematicById = function (id) {
+        var thematic = null;
+        for (var i = 0; i < this.thematics.length; i++)
+            if (this.thematics[i]._id == id)
+                thematic = this.thematics[i];
+        return thematic;
     };
     return TaskListComponent;
 }());
