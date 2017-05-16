@@ -26,10 +26,14 @@ function getAllUser(req, res) {
 	});
 }
 
+
 function getAllInfoUser(req, res) {
 	try {
+	var params = req.body;
+	var user = params.user;
+	var password = params.password;	
 	var idUser = req.params.idUser;
-	User.findById({ _id: idUser }).exec((err, user) => {
+	User.findOne({ name: user, password:password }).exec((err, user) => {
 		if (err) {
 			res.status(500).send({ err: err });
 		} else {
@@ -41,7 +45,13 @@ function getAllInfoUser(req, res) {
 					if (err) {
 					}
 					Thematic.populate(user, { path: "thematic" }, (err, usersThematic) => {
-						res.status(200).send(usersThematic);
+						var userLogaded = {
+							id: usersThematic._id,
+							userName: usersThematic.name,
+							tasks:usersThematic.tasks,
+							thematics:usersThematic.thematic
+						}
+						res.status(200).send(userLogaded);
 					});
 				});
 			}
