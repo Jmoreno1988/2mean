@@ -33,6 +33,7 @@ export class TaskListComponent implements OnInit {
     public isSaving: boolean;
     public idThematicSelected: string;
     public isShowMenusettings: boolean;
+    public isShowMenuSort: boolean;
     public menuSettings: any;
 
     constructor(
@@ -54,6 +55,7 @@ export class TaskListComponent implements OnInit {
         this.thematics = [];
         this.idThematicSelected = null;
         this.isShowMenusettings = false;
+        this.isShowMenuSort = false;
     }
 
     ngAfterViewInit() {
@@ -61,6 +63,13 @@ export class TaskListComponent implements OnInit {
             event.stopPropagation();
         });
         document.getElementById('buttonMenusettings').addEventListener('click', function (event: any) {
+            event.stopPropagation();
+        });
+
+        document.getElementById('menuSort').addEventListener('click', function (event: any) {
+            event.stopPropagation();
+        });
+        document.getElementById('buttonMenuSort').addEventListener('click', function (event: any) {
             event.stopPropagation();
         });
     }
@@ -79,6 +88,7 @@ export class TaskListComponent implements OnInit {
         $(window).click(function () {
             //Hide the menus if visible
             this.hiddenMenuSettings();
+            this.hiddenMenuSort();
         }.bind(this));
     }
 
@@ -301,6 +311,14 @@ export class TaskListComponent implements OnInit {
 
     public hiddenMenuSettings() {
         this.isShowMenusettings = false;
+    }
+
+    public showMenuSort() {
+        this.isShowMenuSort = true;
+    }
+
+    public hiddenMenuSort() {
+        this.isShowMenuSort = false;
     }
 
     public goTo(destination: string) {

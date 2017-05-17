@@ -36,12 +36,19 @@ var TaskListComponent = (function () {
         this.thematics = [];
         this.idThematicSelected = null;
         this.isShowMenusettings = false;
+        this.isShowMenuSort = false;
     }
     TaskListComponent.prototype.ngAfterViewInit = function () {
         document.getElementById('menuSettings').addEventListener('click', function (event) {
             event.stopPropagation();
         });
         document.getElementById('buttonMenusettings').addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+        document.getElementById('menuSort').addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+        document.getElementById('buttonMenuSort').addEventListener('click', function (event) {
             event.stopPropagation();
         });
     };
@@ -54,6 +61,7 @@ var TaskListComponent = (function () {
         this.tasks = this.getAllTasks();
         $(window).click(function () {
             this.hiddenMenuSettings();
+            this.hiddenMenuSort();
         }.bind(this));
     };
     TaskListComponent.prototype.search = function () {
@@ -232,6 +240,12 @@ var TaskListComponent = (function () {
     };
     TaskListComponent.prototype.hiddenMenuSettings = function () {
         this.isShowMenusettings = false;
+    };
+    TaskListComponent.prototype.showMenuSort = function () {
+        this.isShowMenuSort = true;
+    };
+    TaskListComponent.prototype.hiddenMenuSort = function () {
+        this.isShowMenuSort = false;
     };
     TaskListComponent.prototype.goTo = function (destination) {
         this._router.navigate([destination]);

@@ -5,7 +5,7 @@
 
     <div class="header">
         <img  (click)="createThematic();" class="header-fix-icon" src="./app/assets/images/plus-black.svg" alt=""> Add theme
-        <div (click)="selectAllTasks();" class="thematic"> All tasks </div>
+        <div (click)="selectAllTasks();" class="thematic" [ngClass]="{'selectThematic': selectedThematic === null}"> All tasks </div>
         <div *ngFor="let thematic of thematics; let i = index;" [attr.data-index]="i">
             <div (click)="selectThematic(thematic._id, i);" class="thematic" [ngClass]="{'selectThematic': selectedThematic === i}"> {{thematic.title}} </div>
         </div>
@@ -22,13 +22,19 @@
         <div style="position:absolute; right: 30px; top: 5px;">
             <img class="icon" style="padding-right: 15px;" src="./app/assets/images/search.svg" alt="">
             <!--<input type="text" name="title" class="inputsearch"/>-->
-            <img class="icon" style="padding-right: 15px;" src="./app/assets/images/view-module.svg" alt="">
+            <img class="icon" id="buttonMenuSort" style="padding-right: 15px;" (click)="showMenuSort()" src="./app/assets/images/sort-descending.svg" alt="">
             <img class="icon" id="buttonMenusettings" (click)="showMenuSettings()" src="./app/assets/images/dots-vertical.svg" alt="">
         </div>
 
         <div id="menuSettings" class="dropdown-menu" [ngClass]="{'show': isShowMenusettings === true}">
             <div (click)="logout()" class="dropdown-menu-option"> Log out </div>
             <div (click)="goTo('settings')" class="dropdown-menu-option"> Settings </div>
+        </div>
+
+        <div id="menuSort" class="dropdown-menu" [ngClass]="{'show': isShowMenuSort === true}">
+            <div class="dropdown-menu-option"> Sort by priority </div>
+            <div class="dropdown-menu-option"> Sort by date </div>
+            <div class="dropdown-menu-option"> Sort by name </div>
         </div>
     </div>
 
