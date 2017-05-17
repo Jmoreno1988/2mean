@@ -6,10 +6,6 @@
     <div class="header">
         <img class="header-fix-icon" src="./app/assets/images/plus-black.svg" alt=""> Add theme
         <div (click)="selectAllTasks();" class="thematic"> All tasks </div>
-        <!--
-        <div class="thematic"> Trabajo </div>
-        <div class="thematic"> Compra </div>
-        -->
         <div *ngFor="let thematic of thematics; let i = index;" [attr.data-index]="i">
             <div (click)="selectThematic(thematic._id, i);" class="thematic"> {{thematic.title}} </div>
         </div>
@@ -24,9 +20,14 @@
         </div>
 
         <div style="position:absolute; right: 30px; top: 5px;">
-            <img style="padding-right: 15px;" src="./app/assets/images/search.svg" alt="">
-            <img style="padding-right: 15px;" src="./app/assets/images/view-module.svg" alt="">
-            <img src="./app/assets/images/dots-vertical.svg" alt="">
+            <img class="icon" style="padding-right: 15px;" src="./app/assets/images/search.svg" alt="">
+            <img class="icon" style="padding-right: 15px;" src="./app/assets/images/view-module.svg" alt="">
+            <img class="icon" id="buttonMenusettings" (click)="showMenuSettings()" src="./app/assets/images/dots-vertical.svg" alt="">
+        </div>
+
+        <div id="menuSettings" class="dropdown-menu" [ngClass]="{'show': isShowMenusettings === true}">
+            <div (click)="logout()" class="dropdown-menu-option"> Log out </div>
+            <div class="dropdown-menu-option"> Settings </div>
         </div>
     </div>
 
@@ -54,7 +55,7 @@
         </div>
     </div>
 
-    <div (click)="addTask()" class="button-floating-action">
+    <div (click)="createTask()" class="button-floating-action">
         <img width="24px" height="24px" class="center-img" src="./app/assets/images/plus.svg" alt="">
     </div>
 </div>

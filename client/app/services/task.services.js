@@ -20,7 +20,7 @@ var TaskService = (function () {
     TaskService.prototype.getTasks = function () {
         return this._http.get(this.url + "/getAllTask").map(function (res) { return res.json(); });
     };
-    TaskService.prototype.addTask = function (newTask) {
+    TaskService.prototype.createTask = function (newTask) {
         var json = JSON.stringify(newTask);
         var params = json;
         var headers = new http_1.Headers({

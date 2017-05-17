@@ -1,3 +1,5 @@
+declare var $: any;
+
 import { Component, OnInit } from "@angular/core";
 import { SharedService } from "../services/shared.services";
 import { TaskService } from "../services/task.services";
@@ -27,6 +29,9 @@ export class TaskListComponent implements OnInit {
     public title: string;
     public timeout: any;
     public isSaving: boolean;
+    public idThematicSelected: string;
+    public isShowMenusettings: boolean;
+    public menuSettings: any;
 
     constructor(
         private _taskService: TaskService,
@@ -43,18 +48,41 @@ export class TaskListComponent implements OnInit {
         this.user = this._sharedService.user;
         this.tasks = [];
         this.thematics = [];
+        this.idThematicSelected = null;
+        this.isShowMenusettings = false;
+    }
+
+    ngAfterViewInit() {
+        document.getElementById('menuSettings').addEventListener('click', function (event: any) {
+            event.stopPropagation();
+        });
+        document.getElementById('buttonMenusettings').addEventListener('click', function (event: any) {
+            event.stopPropagation();
+        });
     }
 
     ngOnInit() {
         // Si no hay usuario, volvemos a la ventana de Login
         if (!this.user) {
-            this._router.navigate([""]); 
+            this._router.navigate([""]);
             return;
         }
 
         // Cargamos todas las tematicas y tareas
         this.thematics = this.getAllThematics();
         this.tasks = this.getAllTasks();
+
+        $(window).click(function () {
+            //Hide the menus if visible
+            this.hiddenMenuSettings();
+        }.bind(this));
+    }
+
+    public logout() {
+        this.user = null;
+        this.thematics = null;
+        this.tasks = null;
+        this._router.navigate([""]);
     }
 
     private getTasksByThematic(idThematic: string) {
@@ -62,7 +90,7 @@ export class TaskListComponent implements OnInit {
 
         for (let t of this.user.tasks)
             if (idThematic == t.thematicId)
-                tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+                tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority, this.user._id, t.thematicId));
 
         return tasks;
     }
@@ -71,7 +99,7 @@ export class TaskListComponent implements OnInit {
         let tasks: Array<Task> = [];
 
         for (let t of this.user.tasks)
-            tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+            tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority, this.user._id, t.thematicId));
 
         return tasks;
     }
@@ -86,12 +114,14 @@ export class TaskListComponent implements OnInit {
     }
 
     private selectThematic(idThematic: string) {
+        this.idThematicSelected = idThematic;
         this.tasks = this.getTasksByThematic(idThematic)
         this.title = this.getThematicById(idThematic).title;
     }
 
     private selectAllTasks(idThematic: string) {
-        this.tasks = this.getAllTasks()
+        this.idThematicSelected = null;
+        this.tasks = this.getAllTasks();
         this.title = "All task";
     }
 
@@ -101,7 +131,7 @@ export class TaskListComponent implements OnInit {
                 this.tasks = []; // Limpia la lista
 
                 for (let t of res.tasks)
-                    this.tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+                    this.tasks.push(new Task(t._id, t.title, t.description, t.date, t.priority, this.user._id, t.thematicId));
             },
             err => {
                 console.log("Error al recibir las tareas del servidor");
@@ -126,10 +156,10 @@ export class TaskListComponent implements OnInit {
         }, 500);
     }
 
-    public addTask() {
-        let newTask: Task = new Task("id", "Title", "Description", new Date(), 1, null);
+    public createTask() {
+        let newTask: Task = new Task("id", "Title", "Description", new Date(), 1, this.user._id, this.idThematicSelected);
 
-        this._taskService.addTask(newTask).subscribe(
+        this._taskService.createTask(newTask).subscribe(
             res => {
                 this.getTasks();
             },
@@ -227,11 +257,19 @@ export class TaskListComponent implements OnInit {
 
     private getThematicById(id: string): Thematic {
         let thematic: Thematic = null;
-        
+
         for (let i = 0; i < this.thematics.length; i++)
             if (this.thematics[i]._id == id)
                 thematic = this.thematics[i];
-                
+
         return thematic;
+    }
+
+    public showMenuSettings() {
+        this.isShowMenusettings = true;
+    }
+
+    public hiddenMenuSettings() {
+        this.isShowMenusettings = false;
     }
 }

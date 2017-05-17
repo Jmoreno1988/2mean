@@ -5,6 +5,7 @@ export class Task {
 		public description: string, 
         public date: Date,
         public priority: number,
+		public userId: string,
 		public thematicId: string
 	) {}
 }

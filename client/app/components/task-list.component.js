@@ -31,7 +31,17 @@ var TaskListComponent = (function () {
         this.user = this._sharedService.user;
         this.tasks = [];
         this.thematics = [];
+        this.idThematicSelected = null;
+        this.isShowMenusettings = false;
     }
+    TaskListComponent.prototype.ngAfterViewInit = function () {
+        document.getElementById('menuSettings').addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+        document.getElementById('buttonMenusettings').addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    };
     TaskListComponent.prototype.ngOnInit = function () {
         if (!this.user) {
             this._router.navigate([""]);
@@ -39,13 +49,22 @@ var TaskListComponent = (function () {
         }
         this.thematics = this.getAllThematics();
         this.tasks = this.getAllTasks();
+        $(window).click(function () {
+            this.hiddenMenuSettings();
+        }.bind(this));
+    };
+    TaskListComponent.prototype.logout = function () {
+        this.user = null;
+        this.thematics = null;
+        this.tasks = null;
+        this._router.navigate([""]);
     };
     TaskListComponent.prototype.getTasksByThematic = function (idThematic) {
         var tasks = [];
         for (var _i = 0, _a = this.user.tasks; _i < _a.length; _i++) {
             var t = _a[_i];
             if (idThematic == t.thematicId)
-                tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+                tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority, this.user._id, t.thematicId));
         }
         return tasks;
     };
@@ -53,7 +72,7 @@ var TaskListComponent = (function () {
         var tasks = [];
         for (var _i = 0, _a = this.user.tasks; _i < _a.length; _i++) {
             var t = _a[_i];
-            tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+            tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority, this.user._id, t.thematicId));
         }
         return tasks;
     };
@@ -66,10 +85,12 @@ var TaskListComponent = (function () {
         return thematics;
     };
     TaskListComponent.prototype.selectThematic = function (idThematic) {
+        this.idThematicSelected = idThematic;
         this.tasks = this.getTasksByThematic(idThematic);
         this.title = this.getThematicById(idThematic).title;
     };
     TaskListComponent.prototype.selectAllTasks = function (idThematic) {
+        this.idThematicSelected = null;
         this.tasks = this.getAllTasks();
         this.title = "All task";
     };
@@ -79,7 +100,7 @@ var TaskListComponent = (function () {
             _this.tasks = [];
             for (var _i = 0, _a = res.tasks; _i < _a.length; _i++) {
                 var t = _a[_i];
-                _this.tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority, t.thematicId));
+                _this.tasks.push(new taskModel_1.Task(t._id, t.title, t.description, t.date, t.priority, _this.user._id, t.thematicId));
             }
         }, function (err) {
             console.log("Error al recibir las tareas del servidor");
@@ -100,10 +121,10 @@ var TaskListComponent = (function () {
             });
         }, 500);
     };
-    TaskListComponent.prototype.addTask = function () {
+    TaskListComponent.prototype.createTask = function () {
         var _this = this;
-        var newTask = new taskModel_1.Task("id", "Title", "Description", new Date(), 1, null);
-        this._taskService.addTask(newTask).subscribe(function (res) {
+        var newTask = new taskModel_1.Task("id", "Title", "Description", new Date(), 1, this.user._id, this.idThematicSelected);
+        this._taskService.createTask(newTask).subscribe(function (res) {
             _this.getTasks();
         }, function (err) {
             console.log("Error al añadir una tarea nueva.");
@@ -182,6 +203,12 @@ var TaskListComponent = (function () {
             if (this.thematics[i]._id == id)
                 thematic = this.thematics[i];
         return thematic;
+    };
+    TaskListComponent.prototype.showMenuSettings = function () {
+        this.isShowMenusettings = true;
+    };
+    TaskListComponent.prototype.hiddenMenuSettings = function () {
+        this.isShowMenusettings = false;
     };
     return TaskListComponent;
 }());

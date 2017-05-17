@@ -18,7 +18,7 @@ export class TaskService {
         return this._http.get(this.url + "/getAllTask").map(res => res.json());
     }
 
-    addTask(newTask: Task) {
+    createTask(newTask: Task) {
 		let json = JSON.stringify(newTask);
 		let params = json;
 		let headers = new Headers({
