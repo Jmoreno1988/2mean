@@ -3,9 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var router_1 = require("@angular/router");
 var login_component_1 = require("./components/login.component");
 var task_list_component_1 = require("./components/task-list.component");
+var settings_component_1 = require("./components/settings.component");
 var appRoutes = [
     { path: "", component: login_component_1.LoginComponent },
     { path: "taskList", component: task_list_component_1.TaskListComponent },
+    { path: "settings", component: settings_component_1.SettingsComponent },
     { path: "**", component: login_component_1.LoginComponent }
 ];
 exports.appRoutingProvider = [];

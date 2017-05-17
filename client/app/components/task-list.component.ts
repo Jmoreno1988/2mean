@@ -4,6 +4,7 @@ import { Component, OnInit } from "@angular/core";
 import { SharedService } from "../services/shared.services";
 import { TaskService } from "../services/task.services";
 import { UserService } from "../services/user.services";
+import { ThematicService } from "../services/thematic.services";
 import { Task } from "../models/taskModel";
 import { Thematic } from "../models/thematicModel";
 import { User } from "../models/userModel";
@@ -12,7 +13,7 @@ import { Router, ActivatedRoute, Params } from "@angular/router";
 @Component({
     selector: "task-list",
     templateUrl: "./app/views/task-list.html",
-    providers: [TaskService, UserService],
+    providers: [TaskService, UserService, ThematicService],
     styleUrls: ["./app/assets/css/task-list.styles.css"]
 })
 
@@ -23,6 +24,7 @@ export class TaskListComponent implements OnInit {
     public thematics: Array<Thematic>;
     public editNode: any;
     public selectedTaskNode: number;
+    public selectedThematic: number;
     public selectedTaskNodeRemove: number;
     public strColor: string;
     public isEdit: boolean;
@@ -36,12 +38,14 @@ export class TaskListComponent implements OnInit {
     constructor(
         private _taskService: TaskService,
         private _userService: UserService,
+        private _thematicService: ThematicService,
         private _router: Router,
         private _sharedService: SharedService
     ) {
         this.editNode = null;
         this.selectedTaskNode = null;
         this.selectedTaskNodeRemove = null;
+        this.selectedThematic = null;
         this.timeout = null;
         this.title = "All task";
         this.isSaving = false;
@@ -78,6 +82,18 @@ export class TaskListComponent implements OnInit {
         }.bind(this));
     }
 
+    public search() {
+        let substring = "texto"
+        let tasks: Array<Task> = [];
+        for (let t of this.user.tasks) {
+            if(t.description.includes(substring)){
+                tasks.push(t);
+            }
+        }
+
+        this.tasks = tasks;
+    }
+
     public logout() {
         this.user = null;
         this.thematics = null;
@@ -108,19 +124,21 @@ export class TaskListComponent implements OnInit {
         let thematics: Array<Thematic> = [];
 
         for (let t of this.user.thematics)
-            thematics.push(new Thematic(t._id, t.title));
+            thematics.push(new Thematic(t._id, t.title, this.user._id));
 
         return thematics;
     }
 
-    private selectThematic(idThematic: string) {
+    private selectThematic(idThematic: string, i: any) {
         this.idThematicSelected = idThematic;
+        this.selectedThematic = i;
         this.tasks = this.getTasksByThematic(idThematic)
         this.title = this.getThematicById(idThematic).title;
     }
 
     private selectAllTasks(idThematic: string) {
         this.idThematicSelected = null;
+        this.selectedThematic = null;
         this.tasks = this.getAllTasks();
         this.title = "All task";
     }
@@ -161,7 +179,7 @@ export class TaskListComponent implements OnInit {
 
         this._taskService.createTask(newTask).subscribe(
             res => {
-                this.getTasks();
+                console.log(res)
             },
             err => {
                 console.log("Error al añadir una tarea nueva.");
@@ -191,6 +209,18 @@ export class TaskListComponent implements OnInit {
             this.editNode = null;
             this.selectedTaskNode = null;
         }*/
+    }
+
+    public createThematic() {
+        let newThematic: Thematic = new Thematic("id", "Projects", this.user._id);
+
+        this._thematicService.createThematic(newThematic).subscribe(
+            res => {
+                console.log(res);
+            },
+            err => {
+                console.log("Error al añadir la tematica nueva.");
+            });
     }
 
     public upPriority(_id: string) {
@@ -271,5 +301,9 @@ export class TaskListComponent implements OnInit {
 
     public hiddenMenuSettings() {
         this.isShowMenusettings = false;
+    }
+
+    public goTo(destination: string) {
+        this._router.navigate([destination]);
     }
 }

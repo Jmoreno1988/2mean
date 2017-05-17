@@ -13,18 +13,21 @@ var core_1 = require("@angular/core");
 var shared_services_1 = require("../services/shared.services");
 var task_services_1 = require("../services/task.services");
 var user_services_1 = require("../services/user.services");
+var thematic_services_1 = require("../services/thematic.services");
 var taskModel_1 = require("../models/taskModel");
 var thematicModel_1 = require("../models/thematicModel");
 var router_1 = require("@angular/router");
 var TaskListComponent = (function () {
-    function TaskListComponent(_taskService, _userService, _router, _sharedService) {
+    function TaskListComponent(_taskService, _userService, _thematicService, _router, _sharedService) {
         this._taskService = _taskService;
         this._userService = _userService;
+        this._thematicService = _thematicService;
         this._router = _router;
         this._sharedService = _sharedService;
         this.editNode = null;
         this.selectedTaskNode = null;
         this.selectedTaskNodeRemove = null;
+        this.selectedThematic = null;
         this.timeout = null;
         this.title = "All task";
         this.isSaving = false;
@@ -53,6 +56,17 @@ var TaskListComponent = (function () {
             this.hiddenMenuSettings();
         }.bind(this));
     };
+    TaskListComponent.prototype.search = function () {
+        var substring = "texto";
+        var tasks = [];
+        for (var _i = 0, _a = this.user.tasks; _i < _a.length; _i++) {
+            var t = _a[_i];
+            if (t.description.includes(substring)) {
+                tasks.push(t);
+            }
+        }
+        this.tasks = tasks;
+    };
     TaskListComponent.prototype.logout = function () {
         this.user = null;
         this.thematics = null;
@@ -80,17 +94,19 @@ var TaskListComponent = (function () {
         var thematics = [];
         for (var _i = 0, _a = this.user.thematics; _i < _a.length; _i++) {
             var t = _a[_i];
-            thematics.push(new thematicModel_1.Thematic(t._id, t.title));
+            thematics.push(new thematicModel_1.Thematic(t._id, t.title, this.user._id));
         }
         return thematics;
     };
-    TaskListComponent.prototype.selectThematic = function (idThematic) {
+    TaskListComponent.prototype.selectThematic = function (idThematic, i) {
         this.idThematicSelected = idThematic;
+        this.selectedThematic = i;
         this.tasks = this.getTasksByThematic(idThematic);
         this.title = this.getThematicById(idThematic).title;
     };
     TaskListComponent.prototype.selectAllTasks = function (idThematic) {
         this.idThematicSelected = null;
+        this.selectedThematic = null;
         this.tasks = this.getAllTasks();
         this.title = "All task";
     };
@@ -122,10 +138,9 @@ var TaskListComponent = (function () {
         }, 500);
     };
     TaskListComponent.prototype.createTask = function () {
-        var _this = this;
         var newTask = new taskModel_1.Task("id", "Title", "Description", new Date(), 1, this.user._id, this.idThematicSelected);
         this._taskService.createTask(newTask).subscribe(function (res) {
-            _this.getTasks();
+            console.log(res);
         }, function (err) {
             console.log("Error al añadir una tarea nueva.");
         });
@@ -147,6 +162,14 @@ var TaskListComponent = (function () {
             this.editNode = id;
             this.selectedTaskNode = i;
         }
+    };
+    TaskListComponent.prototype.createThematic = function () {
+        var newThematic = new thematicModel_1.Thematic("id", "Projects", this.user._id);
+        this._thematicService.createThematic(newThematic).subscribe(function (res) {
+            console.log(res);
+        }, function (err) {
+            console.log("Error al añadir la tematica nueva.");
+        });
     };
     TaskListComponent.prototype.upPriority = function (_id) {
         var _this = this;
@@ -210,17 +233,21 @@ var TaskListComponent = (function () {
     TaskListComponent.prototype.hiddenMenuSettings = function () {
         this.isShowMenusettings = false;
     };
+    TaskListComponent.prototype.goTo = function (destination) {
+        this._router.navigate([destination]);
+    };
     return TaskListComponent;
 }());
 TaskListComponent = __decorate([
     core_1.Component({
         selector: "task-list",
         templateUrl: "./app/views/task-list.html",
-        providers: [task_services_1.TaskService, user_services_1.UserService],
+        providers: [task_services_1.TaskService, user_services_1.UserService, thematic_services_1.ThematicService],
         styleUrls: ["./app/assets/css/task-list.styles.css"]
     }),
     __metadata("design:paramtypes", [task_services_1.TaskService,
         user_services_1.UserService,
+        thematic_services_1.ThematicService,
         router_1.Router,
         shared_services_1.SharedService])
 ], TaskListComponent);

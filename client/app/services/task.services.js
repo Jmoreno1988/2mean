@@ -26,7 +26,7 @@ var TaskService = (function () {
         var headers = new http_1.Headers({
             "Content-Type": "application/json"
         });
-        return this._http.post(this.url + "/saveTask", params, { headers: headers })
+        return this._http.post(this.url + "/createTask", params, { headers: headers })
             .map(function (res) { return res.json(); });
     };
     TaskService.prototype.updateTask = function (task) {
