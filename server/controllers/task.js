@@ -6,6 +6,10 @@ var Thematic = require('../models/thematicModel');
 var User = require('../models/userModel');
 
 //Se pasan los parametros por el body
+
+
+//TODO: cambiar el orden,....lo último es SAVE TASK, solo si no da errores en el resto de comprobaciones
+//TODO: permitir mismo titulo de tareas
 function createTask(req, res) {
 
 	var params = req.body;

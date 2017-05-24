@@ -10,7 +10,7 @@ var userSchema = Schema({
 	name:String,
 	password: String,
 	email:String,
-	token:String,
+	token:{type: String, ref: 'tokenModel'},
 	thematic:[{type: Schema.ObjectId, ref: 'thematicModel'}],
 	tasks: [{type: Schema.ObjectId, ref: 'taskModel'}]
 	

@@ -69,7 +69,7 @@ function saveThematic(req, res) {
                                         res.status(200).send({message: "Error al guardar la tarea para el usuario activo"});
                                     } else {//Guardo user en thematic
                                         res.status(200).send({
-                                            taskStored: thematicUpdated
+                                            thematicStored: thematicStored
                                         });
                                     }
                                 }
