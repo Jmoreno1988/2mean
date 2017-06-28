@@ -8,6 +8,8 @@ var Token = require('../models/tokenModel');
 // Token
 var randtoken = require('rand-token');
 
+var timeToken = 10 // Segundos;
+
 
 function getAllUser(req, res) {
 	User.find({}).exec((err, users) => {
@@ -46,7 +48,6 @@ function getAllInfoUser(req, res) {
 		var password = params.password;
 		var idUser = req.params.idUser;
 
-
 		User.findOne({ name: user, password: password }).exec((err, user) => {
 			if (err) {
 				res.status(500).send({ err: err });
@@ -62,54 +63,32 @@ function getAllInfoUser(req, res) {
 						try {
 							newToken.save((err, tokenStored) => {
 
-								//if (err) {
-								//	res.status(500).send({ message: "Error al guardar token" });
-								//} if (!tokenStored) {
-								//	res.status(200).send({ message: "Errorrrrrrrrrrrrrr token" });
-								//} else {
+
 								try {
 									User.findByIdAndUpdate(user._id, { token: tokenStored.token }, (err, userUpdated) => {
-										//if (err) {
-										//	res.status(500).send({
-										//		message: "Error al actualizar "
-										//	});
-										//} else {
-										//	if (!userUpdated) {
-										//		res.status(200).send({
-										//			message: "No hay datos para actualizar"
-										//		});
-										//	} else {
+
 										console.log("token guardado");
-									
-											Task.populate(userUpdated, { path: "tasks" }, (err, usersTask) => {
-												if (err) {
+
+										Task.populate(userUpdated, { path: "tasks" }, (err, usersTask) => {
+											if (err) {
+											}
+											Thematic.populate(userUpdated, { path: "thematic" }, (err, usersThematic) => {
+												var userInfo = {
+													id: usersThematic._id,
+													userName: usersThematic.name,
+													token: tokenStored.token,
+													tasks: usersThematic.tasks,
+													thematics: usersThematic.thematic
 												}
-												Thematic.populate(userUpdated, { path: "thematic" }, (err, usersThematic) => {
-													var userInfo = {
-														id: usersThematic._id,
-														userName: usersThematic.name,
-														token: tokenStored.token,
-														tasks: usersThematic.tasks,
-														thematics: usersThematic.thematic
-													}
-													res.status(200).send({nuevoToken:userInfo});
-												});
+												res.status(200).send({ nuevoToken: userInfo });
 											});
-										
-										/*res.status(200).send({
-											tokenStored: tokenStored
-										});*/
-										//}
-										//}
+										});
+
+
 									});
 								} catch (error) {
 									console.log("Error al guardar Token" + error);
 								}
-
-
-
-
-								//}
 							});
 						} catch (error) {
 							console.log("Error al guardar Token" + error);
@@ -120,7 +99,7 @@ function getAllInfoUser(req, res) {
 					} else {
 						console.log("YA tiene token " + user.token);
 						//Ahora hay que ver la fecha del token y ver si la sesion está on.
-						var durationToken = 5// Segundos
+						var durationToken = timeToken
 						var currentDate = new Date();
 						Token.findOne({ token: user.token }, (err, tokenUser) => {
 							console.log(tokenUser);
@@ -131,7 +110,8 @@ function getAllInfoUser(req, res) {
 								console.log("sesion ok");
 								Token.findOneAndUpdate({ userId: user._id }, { date: currentDate }, (err, tokenUpdated) => {
 									if (err) {
-										res.status(500).send({message: "Error al consultar usuario en token"
+										res.status(500).send({
+											message: "Error al consultar usuario en token"
 										});
 									} else {
 										if (!tokenUpdated) {
@@ -153,10 +133,10 @@ function getAllInfoUser(req, res) {
 															tasks: usersThematic.tasks,
 															thematics: usersThematic.thematic
 														}
-														res.status(200).send({tokenActualizado :userInfo});
+														res.status(200).send({ tokenActualizado: userInfo });
 													});
 												});
-												});
+											});
 										}
 									}
 								});
@@ -185,7 +165,7 @@ function getAllInfoUser(req, res) {
 															userName: usersThematic.name,
 															token: null
 														}
-														res.status(200).send({tokenCaducado:userInfo});
+														res.status(200).send({ tokenCaducado: userInfo });
 													});
 												});
 											});
@@ -198,31 +178,8 @@ function getAllInfoUser(req, res) {
 							}
 
 						});
-
-
-						/*	Token.findOneAndUpdate({userId : idUser}, { date: currentDate }, (err, tokenUpdated) => {
-								if (err) {
-									res.status(500).send({
-										message: "Error al consultar usuario en token"
-									});
-								} else {
-									if (!tokenUpdated) {
-										res.status(200).send({
-											message: "No hay datos tokenUpdated"
-										});
-									} else {
-										console.log("fecha actualizada" + tokenUpdated.date);
-									}
-								}
-							});
-							*/
 					}
-
-
 				}
-
-
-
 			}
 		});
 	} catch (error) { Console.log("Error al obtener las tareas del usuario " + error) }
@@ -276,43 +233,35 @@ function getThematicForUse(req, res) {
 
 /*Creamos un nuevo usuario. Pendiente asignar token... */
 function saveUser(req, res) {
-	var user = new User();
+	//antes de guardar compruebo que no exista un usuario con el mismo nombre o email.
 	var params = req.body;
-	user.name = params.name;
-	user.password = params.password;
-	user.email = params.email;
-	//antes de guardar compruebo que no tenga ya el tematico con el mismo titulo
-	var isrepeat = false;
-	try {
-		User.find({ name: user.name }).exec((err, users) => {
-			if (err) {
-				res.status(500).send({
-					message: "Error al leer datos"
+	User.find({ $or: [{ name: params.name }, { email: params.email }] }).exec((err, users) => {
+		if (err) {
+			res.status(500).send({
+				message: "Error al leer datos"
+			});
+		} else {
+			if (users.length == 0) {
+				var user = new User();
+				user.name = params.name;
+				user.password = params.password;
+				user.email = params.email;
+				user.save((err, userStored) => {
+					if (err) {
+						res.status(500).send({ messsage: 'Error al guardar' }, { user: null });
+					} else {
+						if (!userStored) {
+							res.status(400).send({ message: 'No se ha guardado' });
+						} else {
+							res.status(200).send({ user: userStored });
+						}
+					}
 				});
 			} else {
-				if (users) {
-					if (users.length == 0) {
-						user.save((err, userStored) => {
-							if (err) {
-								res.status(500).send({ messsage: 'Error en la petición' }, { user: null });
-							} else {
-								if (!userStored) {
-									res.status(400).send({ message: 'No al guardar el usuario' }, { user: null });
-								} else {
-									res.status(200).send({ user: userStored });
-								}
-							}
-						});
-					} else {
-						res.status(200).send({ message: "Ya existe ese nombre de usuario", user: null });
-					}
-				}
+				res.status(200).send({ message: "Ya existe ese nombre de usuario o ese email", user: null });
 			}
-		});
-	} catch (error) {
-		console.log("Error to save User: " + error);
-	}
-
+		}
+	});
 }
 
 module.exports = {
