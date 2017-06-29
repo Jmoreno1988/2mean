@@ -14,6 +14,9 @@ var timeToken = 20 // Segundos;
 
 /*Creamos un nuevo usuario.*/
 function createUser(req, res) {
+	console.log("*******************************************");
+	console.log("createUser");
+	console.log(req.body)
 	//antes de guardar compruebo que no exista un usuario con el mismo nombre o email.
 	var params = req.body;
 	User.find({ $or: [{ name: params.name }, { email: params.email }] }).exec((err, users) => {
@@ -119,9 +122,10 @@ function getAllInfoUser(req, res) {
 												userName: usersThematic.name,
 												token: tokenStored.token,
 												tasks: usersThematic.tasks,
-												thematics: usersThematic.thematic
+												thematics: usersThematic.thematic,
+												message: "token asignado"
 											}
-											res.status(200).send({ nuevoToken: userInfo });
+											res.status(200).send({userInfo });
 										});
 									});
 								});
@@ -167,9 +171,10 @@ function getAllInfoUser(req, res) {
 														userName: user.name,
 														token: userUpdatedToken.token,
 														tasks: usersThematic.tasks,
-														thematics: usersThematic.thematic
+														thematics: usersThematic.thematic,
+														message:"token actualizado"
 													}
-													res.status(200).send({ tokenActualizado: userInfo });
+													res.status(200).send({userInfo});
 												});
 											});
 										});
@@ -199,7 +204,8 @@ function getAllInfoUser(req, res) {
 													res.status(400).send({ message: 'No se ha actualizado usuario' }, { token: null });
 												} else {
 													userExpired.token = null;
-													res.status(200).send({ message: "sesion expirada", user: userExpired });
+													userExpired.message = "sesion expirada";
+													res.status(200).send({userExpired });
 												}
 											}
 										});
@@ -264,10 +270,86 @@ function getThematicForUse(req, res) {
 
 
 
+function checkSession(req, res) {
+	var idUser = req.params.id;
+
+	User.findById(idUser, (err, user) => {
+		if (err) {
+			res.status(500).send({
+				token: "error"
+			});
+		}
+
+		if (!user || !user.token) {
+			res.status(200).send({
+				token: null
+			});
+		} else {
+			console.log("Ususario con token " + user.token);
+			//Ahora hay que ver la fecha del token y ver si la sesion está on.
+			var durationToken = timeToken;
+			var currentDate = new Date();
+			Token.findOne({ token: user.token }, (err, tokenUser) => {
+				console.log("recupero el token");
+				console.log(tokenUser);
+				if (!tokenUser) {
+					return true;
+				}
+				var a = (tokenUser.date);
+				var b = (currentDate);
+				console.log((b - a) / 1000);
+
+				if ((b - a) / 1000 < durationToken) {
+					console.log("sesion ok: actualizo la fecha del token");
+					Token.findOneAndUpdate({ userId: user._id }, { date: currentDate }, (err, tokenUpdated) => {
+						if (err || !tokenUpdated) {
+							console.log("error al actualizar fecha del token");
+							res.status(200).send({
+								token: "error"
+							});
+						} else {
+							console.log("fecha actualizada" + tokenUpdated.date);
+							res.status(200).send({
+								token: tokenUpdated.token
+							});
+						}
+					});
+				} else {
+					console.log("sesion expirada");
+
+					Token.remove({ token: user.token }, (err, tokenUpdated) => {
+						if (err || !tokenUpdated) {
+							console.log("error al borrar token expirado");
+						}
+						User.findByIdAndUpdate(user._id, { $set: { token: null } }, (err, userExpired) => {
+							if (err || !userExpired) {
+								console.log("error al actualizar a null el token expirado")
+								res.status(200).send({
+								token: "Error"
+							});
+							} else {
+								userExpired.token = null;
+								res.status(200).send({
+								token: userExpired.token
+							});
+							}
+						});
+					});
+					return true;
+				}
+
+			});
+		}
+	});
+}
+
+
+
 module.exports = {
 	getAllUser,
 	getAllInfoUser,
 	getThematicForUse,
 	getTaskforUser,
-	createUser
+	createUser,
+	checkSession
 }

@@ -4,6 +4,7 @@
 var Task = require('../models/taskModel');
 var Thematic = require('../models/thematicModel');
 var User = require('../models/userModel');
+var Token = require('../models/tokenModel');
 
 //Se pasan los parametros por el body
 
@@ -11,6 +12,8 @@ var User = require('../models/userModel');
 //TODO: cambiar el orden,....lo último es SAVE TASK, solo si no da errores en el resto de comprobaciones
 //TODO: permitir mismo titulo de tareas
 function createTask(req, res) {
+	console.log("***********************")
+	console.log("createTask");
 
 	var params = req.body;
 	var task = new Task();
@@ -25,7 +28,9 @@ function createTask(req, res) {
 	//antes de guardar compruebo que ese usuario no tenga ya la tarea con el mismo titulo
 	//var isrepeat = false;
 	try {
-		Task.find({ title: task.title }, { userId: task.userId }).exec((err, tasks) => {
+		Task.find({ $and: [{ title: task.title }, { userId: task.userId }] }).exec((err, tasks) => {
+			console.log(task.userId);
+			console.log(tasks);
 			if (err) {
 				res.status(500).send({ message: "Error al leer datos" });
 			} else {
@@ -39,7 +44,7 @@ function createTask(req, res) {
 							res.status(500).send({ messsage: 'Error en la petición' });
 						} else {
 							if (!taskStored) {
-								res.status(400).send({ message: 'No se ha guardado la imagen' });
+								res.status(400).send({ message: 'No se ha guardado la tarea' });
 							} else {
 								// Actualizo la tabla de usuarios asignandole la nueva tarea.
 								var idUser = params.userId;
@@ -240,6 +245,27 @@ function filterByPriority(req, res) {
 	});
 }
 
+/*Solo para listar las tareas desde POSTMAN*/
+function getAllTask(req, res) {
+	Task.find({}).exec((err, tasks) => {
+		if (err) {
+			res.status(500).send({
+				message: "Error al leer datos"
+			});
+		} else {
+			if (!tasks) {
+				res.status(200).send({
+					message: "No hay datos para leer"
+				});
+			} else {
+				res.status(200).send({
+					task: tasks
+				});
+			}
+		}
+	});
+}
+
 
 
 
@@ -250,5 +276,6 @@ module.exports = {
 	deleteTask,
 	upPriority,
 	downPriority,
-	filterByPriority
+	filterByPriority,
+	getAllTask
 }

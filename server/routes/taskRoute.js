@@ -13,4 +13,6 @@ api.put('/upPriority/:id', taskController.upPriority);
 api.put('/downPriority/:id', taskController.downPriority);
 api.get('/filterByPriority/:priority', taskController.filterByPriority);
 
+api.get('/getAllTask', taskController.getAllTask);
+
 module.exports = api;

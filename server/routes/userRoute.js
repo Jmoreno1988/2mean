@@ -12,8 +12,9 @@ api.get('/getAllUser', userController.getAllUser);
 
 api.get('/getThematicForUse/:name', userController.getThematicForUse);
 api.get('/getTaskforUser/:idUser', userController.getTaskforUser);
-api.post('/saveUser', userController.saveUser);
+api.post('/createUser', userController.createUser);
 api.post('/getAllInfoUser', userController.getAllInfoUser);
+api.get('/checkSession/:id', userController.checkSession);
 
 
 module.exports = api;
